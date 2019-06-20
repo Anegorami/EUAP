@@ -1,8 +1,0 @@
-D:\Anegorami\work\EUAP\RapeEngine\bin\Debug\RapeEngine.exe.config
-D:\Anegorami\work\EUAP\RapeEngine\bin\Debug\RapeEngine.exe
-D:\Anegorami\work\EUAP\RapeEngine\bin\Debug\RapeEngine.pdb
-D:\Anegorami\work\EUAP\RapeEngine\obj\Debug\RapeEngine.csprojResolveAssemblyReference.cache
-D:\Anegorami\work\EUAP\RapeEngine\obj\Debug\RapeEngine.exe
-D:\Anegorami\work\EUAP\RapeEngine\obj\Debug\RapeEngine.pdb
-D:\Anegorami\work\EUAP\RapeEngine\obj\Debug\RapeEngine.MainForm.resources
-D:\Anegorami\work\EUAP\RapeEngine\obj\Debug\RapeEngine.csproj.GenerateResource.Cache
