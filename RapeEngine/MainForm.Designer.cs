@@ -1,20 +1,28 @@
-﻿namespace RapeEngine
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace RapeEngine
 {
 	sealed partial class MainForm {
 		/// <summary>
 		/// Designer variable used to keep track of non-visual components.
 		/// </summary>
-		System.ComponentModel.IContainer components;
+		IContainer components;
 		
 		/// <summary>
 		/// Button for the music test.
 		/// </summary>
-		System.Windows.Forms.Button music_test;
+		Button music_test;
+		
+		/// <summary>
+		/// Button for the sound test.
+		/// </summary>
+		Button test_se;
 		
 		/// <summary>
 		/// Update timer.
 		/// </summary>
-		System.Windows.Forms.Timer update_timer;
+		Timer update_timer;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -37,30 +45,46 @@
 		/// Bullshit. Just keep your hands clean and everything will be OK.
 		/// </summary>
 		void InitializeComponent() {
-			// Initialization.
-			components = new System.ComponentModel.Container();
-			music_test = new System.Windows.Forms.Button();
-			update_timer = new System.Windows.Forms.Timer(components);
+			// Init.
+			components = new Container();
+			ComponentResourceManager resources = new ComponentResourceManager(typeof(MainForm));
+			
+			music_test = new Button();
+			test_se = new Button();
+			update_timer = new Timer(components);
 			
 			SuspendLayout();
 			
-			// Music test button.
-			music_test.Location = new System.Drawing.Point(88, 102);
+			// Music test.
+			music_test.Location = new System.Drawing.Point(88, 42);
 			music_test.Name = "music_test";
 			music_test.Size = new System.Drawing.Size(103, 23);
 			music_test.TabIndex = 0;
-			music_test.Text = "Play test";
+			music_test.Text = "Play BGM test.ogg";
 			music_test.UseVisualStyleBackColor = true;
-			music_test.Click += musicTest;
+			music_test.Click += MusicTest;
+			
+			// Effect test.
+			test_se.Location = new System.Drawing.Point(88, 102);
+			test_se.Name = "test_se";
+			test_se.Size = new System.Drawing.Size(103, 28);
+			test_se.TabIndex = 1;
+			test_se.Text = "Play SE test.ogg";
+			test_se.UseVisualStyleBackColor = true;
+			test_se.Click += EffectTest;
 			
 			// Update timer.
 			update_timer.Enabled = true;
-			update_timer.Tick += step;
+			update_timer.Tick += Step;
 			
-			// The form itself.
-			ClientSize = new System.Drawing.Size(284, 262);
+			// Main form.
+			ClientSize = new System.Drawing.Size(1280, 720);
 			Controls.Add(music_test);
+			Controls.Add(test_se);
+			Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			MaximizeBox = false;
 			Name = "MainForm";
+			StartPosition = FormStartPosition.CenterScreen;
 			Text = "Rape Engine";
 			
 			ResumeLayout(false);

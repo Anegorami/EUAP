@@ -16,8 +16,8 @@ namespace RapeEngine {
 			InitializeComponent();
 			
 			// Constructor code goes here...
-			Audio.init(Handle);
-			audio = Audio.getInstance();
+			Audio.Init(Handle);
+			audio = Audio.GetInstance();
 		}
 		
 		/// <summary>
@@ -25,17 +25,26 @@ namespace RapeEngine {
 		/// </summary>
 		/// <param name="sender">EventHandler parameter. Required, but not used.</param>
 		/// <param name="args">EventHandler parameter. Required, but not used.</param>
-		public void step(object sender, EventArgs args) {
-			audio.update();
+		void Step(object sender, EventArgs args) {
+			audio.Update();
 		}
 		
 		/// <summary>
-		/// Music test button.
+		/// Music test method.
 		/// </summary>
 		/// <param name="sender">EventHandler parameter. Required, but not used.</param>
 		/// <param name="args">EventHandler parameter. Required, but not used.</param>
-		public void musicTest(object sender, EventArgs args) {
-			audio.playBGM("test");
+		void MusicTest(object sender, EventArgs args) {
+			audio.PlayBGM("test");
+		}
+		
+		/// <summary>
+		/// Sound test method.
+		/// </summary>
+		/// <param name="sender">EventHandler parameter. Required, but not used.</param>
+		/// <param name="args">EventHandler parameter. Required, but not used.</param>
+		void EffectTest(object sender, EventArgs args) {
+			audio.PlaySE("test");
 		}
 	}
 }

@@ -17,28 +17,28 @@ namespace RapeEngine {
 			/// <summary>
 			/// Sample handle.
 			/// </summary>
-			public readonly int sample;
+			public readonly int Sample;
 			
 			/// <summary>
 			/// Position of the beginning of the loop (in seconds).
 			/// </summary>
-			public readonly double loopStart;
+			public readonly double LoopStart;
 			
 			/// <summary>
 			/// Position of the end of the loop (in seconds).
 			/// </summary>
-			public readonly double loopEnd;
+			public readonly double LoopEnd;
 			
 			/// <summary>
 			/// Constructor.
 			/// </summary>
-			/// <param name="_sample">Sample handle.</param>
-			/// <param name="_loop_start">Loop start point (in seconds).</param>
-			/// <param name="_loop_end">Loop end point (in seconds).</param>
-			public Bgm(int _sample, double _loop_start, double _loop_end) {
-				sample = _sample;
-				loopStart = _loop_start;
-				loopEnd = _loop_end;
+			/// <param name="sample">Sample handle.</param>
+			/// <param name="loop_start">Loop start point (in seconds).</param>
+			/// <param name="loop_end">Loop end point (in seconds).</param>
+			public Bgm(int sample, double loop_start, double loop_end) {
+				Sample = sample;
+				LoopStart = loop_start;
+				LoopEnd = loop_end;
 			}
 		}
 		
@@ -48,7 +48,17 @@ namespace RapeEngine {
 		const string BGM_DIR = "bgm";
 		
 		/// <summary>
-		/// Dictionary for storing the loaded samples.
+		/// Directory with the sound effects (in Ogg Vorbis format) to scan.
+		/// </summary>
+		const string SE_DIR = "se";
+		
+		/// <summary>
+		/// This determines how much instancies of the same sample can play simulteniously.
+		/// </summary>
+		const int SE_MAX = 10;
+		
+		/// <summary>
+		/// Dictionary for storing the loaded BGM samples.
 		/// </summary>
 		readonly Dictionary<string, Bgm> bgm = new Dictionary<string, Bgm>();
 		
@@ -61,6 +71,11 @@ namespace RapeEngine {
 		/// Active BGM channel handle.
 		/// </summary>
 		int bgm_channel;
+		
+		/// <summary>
+		/// Dictionary to store the loaded SE samples' handles.
+		/// </summary>
+		readonly Dictionary<string, int> se = new Dictionary<string, int>();
 		
 		/// <summary>
 		/// Static instance poiter.
@@ -79,11 +94,6 @@ namespace RapeEngine {
 			
 			// BGM folder scanning.
 			foreach (string filename in Directory.GetFiles(BGM_DIR)) {
-				// Getting the key out of the filename (so, "bgm/test.ogg" would become "test").
-				int origin = BGM_DIR.Length + 1;
-				int length = filename.Length - (origin) - 4;
-				string key = filename.Substring(origin, length);
-				
 				// Sample loading.
 				// First 0 is the starting point.
 				// Second 0 is the length (meaning the whole file).
@@ -97,7 +107,19 @@ namespace RapeEngine {
 				double loop_start = double.Parse(tag.NativeTag("loop_start"), CultureInfo.InvariantCulture);
 				double loop_end = double.Parse(tag.NativeTag("loop_end"), CultureInfo.InvariantCulture);
 				
+				string key = Negolib.MakeKey(filename);
+				
 				bgm[key] = new Bgm(sample, loop_start, loop_end);
+			}
+			
+			// SE folder scanning.
+			foreach (string filename in Directory.GetFiles(SE_DIR)) {
+				string key = Negolib.MakeKey(filename);
+				
+				// Sample loading.
+				// First 0 is the starting point.
+				// Second 0 is the length (meaning the whole file).
+				se[key] = Bass.BASS_SampleLoad(filename, 0, 0, SE_MAX, BASSFlag.BASS_DEFAULT);
 			}
 		}
 		
@@ -106,7 +128,7 @@ namespace RapeEngine {
 		/// Designed to keep the "handle" argument out of getInstance() calls.
 		/// </summary>
 		/// <param name="handle">Main window handle. Required for the BASS library initialization.</param>
-		public static void init(IntPtr handle) {
+		public static void Init(IntPtr handle) {
 			instance = new Audio(handle);
 		}
 		
@@ -114,7 +136,7 @@ namespace RapeEngine {
 		/// A method for getting the singletone instance.
 		/// </summary>
 		/// <returns>Audio object.</returns>
-		public static Audio getInstance() {
+		public static Audio GetInstance() {
 			return instance;
 		}
 		
@@ -122,24 +144,33 @@ namespace RapeEngine {
 		/// A method to play the background music.
 		/// </summary>
 		/// <param name="bgmname">Filename without the extension.</param>
-		public void playBGM(string bgmname) {
+		public void PlayBGM(string bgmname) {
 			// Stops any current BGM and frees the channel.
 			Bass.BASS_ChannelStop(bgm_channel);
 			
 			bgm_current = bgm[bgmname];
-			bgm_channel = Bass.BASS_SampleGetChannel(bgm_current.sample, false);
+			bgm_channel = Bass.BASS_SampleGetChannel(bgm_current.Sample, false);
 			Bass.BASS_ChannelPlay(bgm_channel, false);
+		}
+		
+		/// <summary>
+		/// A method to play the sound effect.
+		/// </summary>
+		/// <param name="sename">Filename without the extension.</param>
+		public void PlaySE(string sename) {
+			int se_channel = Bass.BASS_SampleGetChannel(se[sename], false);
+			Bass.BASS_ChannelPlay(se_channel, false);
 		}
 		
 		/// <summary>
 		/// A method to update the state of the Audio System.
 		/// </summary>
-		public void update() {
+		public void Update() {
 			// Looping.
 			long current_position_bytes = Bass.BASS_ChannelGetPosition(bgm_channel);
 			double current_position = Bass.BASS_ChannelBytes2Seconds(bgm_channel, current_position_bytes);
-			if (current_position > bgm_current.loopEnd) {
-				double new_position = bgm_current.loopStart + (current_position - bgm_current.loopEnd);
+			if (current_position > bgm_current.LoopEnd) {
+				double new_position = bgm_current.LoopStart + (current_position - bgm_current.LoopEnd);
 				Bass.BASS_ChannelSetPosition(bgm_channel, new_position);
 			}
 		}
