@@ -4,6 +4,8 @@ using System.Windows.Forms;
 namespace RapeEngine
 {
 	sealed partial class MainForm {
+		const int WIDTH = 1280;
+		const int HEIGHT = 720;
 		/// <summary>
 		/// Designer variable used to keep track of non-visual components.
 		/// </summary>
@@ -47,7 +49,7 @@ namespace RapeEngine
 		void InitializeComponent() {
 			// Init.
 			components = new Container();
-			ComponentResourceManager resources = new ComponentResourceManager(typeof(MainForm));
+			var resources = new ComponentResourceManager(typeof(MainForm));
 			
 			music_test = new Button();
 			test_se = new Button();
@@ -78,7 +80,7 @@ namespace RapeEngine
 			update_timer.Tick += Step;
 			
 			// Main form.
-			ClientSize = new System.Drawing.Size(1280, 720);
+			ClientSize = new System.Drawing.Size(WIDTH, HEIGHT);
 			Controls.Add(music_test);
 			Controls.Add(test_se);
 			Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
