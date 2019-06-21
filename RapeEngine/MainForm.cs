@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
-using Un4seen.Bass;
 
 namespace RapeEngine {
 	/// <summary>
 	/// Main form.
 	/// </summary>
 	public sealed partial class MainForm: Form {
-		/// <summary>
-		/// Audio handler for playback stopping.
-		/// </summary>
-		int stream;
+		Audio audio;
 		
 		/// <summary>
 		/// Basic constructor.
@@ -20,19 +16,26 @@ namespace RapeEngine {
 			InitializeComponent();
 			
 			// Constructor code goes here...
-			Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, Handle);
+			Audio.init(Handle);
+			audio = Audio.getInstance();
 		}
 		
 		/// <summary>
-		/// Music test.
+		/// Update method. SHOULD be replaced with one-per-frame update event.
+		/// </summary>
+		/// <param name="sender">EventHandler parameter. Required, but not used.</param>
+		/// <param name="args">EventHandler parameter. Required, but not used.</param>
+		public void step(object sender, EventArgs args) {
+			audio.update();
+		}
+		
+		/// <summary>
+		/// Music test button.
 		/// </summary>
 		/// <param name="sender">EventHandler parameter. Required, but not used.</param>
 		/// <param name="args">EventHandler parameter. Required, but not used.</param>
 		public void musicTest(object sender, EventArgs args) {
-			Bass.BASS_ChannelStop(stream);
-			
-			stream = Bass.BASS_StreamCreateFile("test.mp3", 0, 0, BASSFlag.BASS_DEFAULT);
-			Bass.BASS_ChannelPlay(stream, false);
+			audio.playBGM("test");
 		}
 	}
 }
