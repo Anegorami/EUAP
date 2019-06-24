@@ -4,8 +4,6 @@ using System.Windows.Forms;
 namespace RapeEngine
 {
 	sealed partial class MainForm {
-		const int WIDTH = 1280;
-		const int HEIGHT = 720;
 		/// <summary>
 		/// Designer variable used to keep track of non-visual components.
 		/// </summary>
@@ -80,7 +78,7 @@ namespace RapeEngine
 			update_timer.Tick += Step;
 			
 			// Main form.
-			ClientSize = new System.Drawing.Size(WIDTH, HEIGHT);
+			ClientSize = new System.Drawing.Size(1280, 720);
 			Controls.Add(music_test);
 			Controls.Add(test_se);
 			Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
