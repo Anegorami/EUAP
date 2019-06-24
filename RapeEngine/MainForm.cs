@@ -6,7 +6,7 @@ namespace RapeEngine {
 	/// Main form.
 	/// </summary>
 	public sealed partial class MainForm: Form {
-		Audio audio;
+        GameMain gameMain;
 		
 		/// <summary>
 		/// Basic constructor.
@@ -14,6 +14,7 @@ namespace RapeEngine {
 		public MainForm() {
 			// Required.
 			InitializeComponent();
+            gameMain = new GameMain();
 		}
 	}
 }
