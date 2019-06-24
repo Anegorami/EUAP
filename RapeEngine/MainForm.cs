@@ -40,6 +40,19 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
+		/// BGS test method.
+		/// </summary>
+		/// <param name="sender">EventHandler parameter. Required, but not used.</param>
+		/// <param name="args">EventHandler parameter. Required, but not used.</param>
+		void BGSTest(object sender, EventArgs args) {
+			if (!Audio.IsBGSPlaying()) {
+				Audio.PlayBGS("test");
+			} else {
+				Audio.StopBGS();
+			}
+		}
+		
+		/// <summary>
 		/// Sound test method.
 		/// </summary>
 		/// <param name="sender">EventHandler parameter. Required, but not used.</param>

@@ -12,7 +12,7 @@ namespace RapeEngine {
 		/// <summary>
 		/// Small structure to keep all of the BGM-related data in one place.
 		/// </summary>
-		struct Bgm {
+		struct LoopedSample {
 			/// <summary>
 			/// Sample handle.
 			/// </summary>
@@ -31,25 +31,37 @@ namespace RapeEngine {
 			/// <summary>
 			/// Constructor.
 			/// </summary>
-			/// <param name="sample">Sample handle.</param>
-			/// <param name="loop_start">Loop start point (in seconds).</param>
-			/// <param name="loop_end">Loop end point (in seconds).</param>
-			public Bgm(int sample, double loop_start, double loop_end) {
-				Sample = sample;
-				LoopStart = loop_start;
-				LoopEnd = loop_end;
+			/// <param name="filename">File name.</param>
+			public LoopedSample(string filename) {
+				// Sample loading.
+				// First 0 is the starting point.
+				// Second 0 is the length (meaning the whole file).
+				// The 1 is the maximum channels playing the same sample simulteniously.
+				// For looped samples, 1 is a good choice.
+				Sample = Bass.BASS_SampleLoad(filename, 0, 0, 1, BASSFlag.BASS_DEFAULT);
+				
+				// Extracting loop timepoints from the tags.
+				TAG_INFO tag = BassTags.BASS_TAG_GetFromFile(filename);
+				string test = tag.NativeTag("loop_start");
+				if (test != null) {
+					LoopStart = Negolib.StringToDouble(test);
+					LoopEnd = Negolib.StringToDouble(tag.NativeTag("loop_end"));
+				} else {
+					LoopStart = 0;
+					LoopEnd = Bass.BASS_ChannelBytes2Seconds(Sample, Bass.BASS_SampleGetInfo(Sample).length);
+				}
 			}
 		}
 		
 		/// <summary>
 		/// Dictionary for storing the loaded BGM samples.
 		/// </summary>
-		static readonly Dictionary<string, Bgm> bgm = new Dictionary<string, Bgm>();
+		static readonly Dictionary<string, LoopedSample> bgm = new Dictionary<string, LoopedSample>();
 		
 		/// <summary>
 		/// Active BGM.
 		/// </summary>
-		static Bgm bgm_current;
+		static LoopedSample bgm_current;
 		
 		/// <summary>
 		/// Active BGM channel handle.
@@ -65,6 +77,31 @@ namespace RapeEngine {
 		/// Initial value of fade timer. Used in FadeIn/FadeOut methods.
 		/// </summary>
 		static double bgm_fade_timer_max;
+		
+		/// <summary>
+		/// Dictionary for storing the loaded BGS samples.
+		/// </summary>
+		static readonly Dictionary<string, LoopedSample> bgs = new Dictionary<string, LoopedSample>();
+		
+		/// <summary>
+		/// Active BGS.
+		/// </summary>
+		static LoopedSample bgs_current;
+		
+		/// <summary>
+		/// Active BGS channel handle.
+		/// </summary>
+		static int bgs_channel;
+		
+		/// <summary>
+		/// Fade timer. Used in FadeIn/FadeOut methods.
+		/// </summary>
+		static double bgs_fade_timer;
+		
+		/// <summary>
+		/// Initial value of fade timer. Used in FadeIn/FadeOut methods.
+		/// </summary>
+		static double bgs_fade_timer_max;
 		
 		/// <summary>
 		/// Dictionary to store the loaded SE samples' handles.
@@ -95,19 +132,12 @@ namespace RapeEngine {
 			
 			// BGM folder scanning.
 			foreach (string filename in Directory.GetFiles("bgm")) {
-				// Sample loading.
-				// First 0 is the starting point.
-				// Second 0 is the length (meaning the whole file).
-				// The 1 is the maximum channels playing the same sample simulteniously. For BGM, 1 is a good choice.
-				int sample = Bass.BASS_SampleLoad(filename, 0, 0, 1, BASSFlag.BASS_DEFAULT);
-				
-				// Extracting loop timepoints from the tags.
-				// Also, big thanks to Microsoft for overengineering String to Double conversion.
-				TAG_INFO tag = BassTags.BASS_TAG_GetFromFile(filename);
-				double loop_start = Negolib.StringToDouble(tag.NativeTag("loop_start"));
-				double loop_end = Negolib.StringToDouble(tag.NativeTag("loop_end"));
-				
-				bgm[Negolib.MakeKey(filename)] = new Bgm(sample, loop_start, loop_end);
+				bgm[Negolib.MakeKey(filename)] = new LoopedSample(filename);
+			}
+			
+			// BGS folder scanning.
+			foreach (string filename in Directory.GetFiles("bgs")) {
+				bgs[Negolib.MakeKey(filename)] = new LoopedSample(filename);
 			}
 			
 			// SE folder scanning.
@@ -126,7 +156,9 @@ namespace RapeEngine {
 		/// <param name="dt">Time taken to draw the current frame.</param>
 		public static void Update(double dt) {
 			Looping();
-			OnUpdate(dt);
+			if (OnUpdate != null) {
+				OnUpdate(dt);
+			}
 		}
 		
 		/// <summary>
@@ -157,6 +189,21 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
+		/// A method to fadeout the BGS.
+		/// </summary>
+		/// <param name="dt">Time taken to draw the current frame.</param>
+		static void BGSFadeOut(double dt) {
+			bgs_fade_timer = Math.Max(bgs_fade_timer - dt, 0);
+			double volume = bgs_fade_timer / bgs_fade_timer_max;
+			Bass.BASS_ChannelSetAttribute(bgs_channel, BASSAttribute.BASS_ATTRIB_VOL, (float) volume);
+			
+			if (Math.Abs(volume) < Double.Epsilon) {
+				Bass.BASS_ChannelStop(bgs_channel);
+				OnUpdate -= BGSFadeOut;
+			}
+		}
+		
+		/// <summary>
 		/// A method to check if the BGM is playing.
 		/// </summary>
 		/// <returns>True, if the BGM is playing, false otherwise.</returns>
@@ -179,13 +226,43 @@ namespace RapeEngine {
 		
 		/// <summary>
 		/// A method to stop currently playing BGM.
-		/// TODO: Make a volume fade.
 		/// </summary>
 		/// <param name="time">Fade time (in seconds).</param>
 		public static void StopBGM (double time = 1) {
 			bgm_fade_timer = time;
 			bgm_fade_timer_max = time;
 			OnUpdate += BGMFadeOut;
+		}
+		
+		/// <summary>
+		/// A method to check if the BGS is playing.
+		/// </summary>
+		/// <returns>True, if the BGS is playing, false otherwise.</returns>
+		public static bool IsBGSPlaying() {
+			return Bass.BASS_ChannelIsActive(bgs_channel) == BASSActive.BASS_ACTIVE_PLAYING;
+		}
+		
+		/// <summary>
+		/// A method to play the background music.
+		/// </summary>
+		/// <param name="bgsname">Filename without the extension.</param>
+		public static void PlayBGS(string bgsname) {
+			// Stops any current BGM and frees the channel.
+			Bass.BASS_ChannelStop(bgs_channel);
+			
+			bgs_current = bgs[bgsname];
+			bgs_channel = Bass.BASS_SampleGetChannel(bgs_current.Sample, false);
+			Bass.BASS_ChannelPlay(bgs_channel, false);
+		}
+		
+		/// <summary>
+		/// A method to stop currently playing BGS.
+		/// </summary>
+		/// <param name="time">Fade time (in seconds).</param>
+		public static void StopBGS (double time = 1) {
+			bgs_fade_timer = time;
+			bgs_fade_timer_max = time;
+			OnUpdate += BGSFadeOut;
 		}
 		
 		/// <summary>

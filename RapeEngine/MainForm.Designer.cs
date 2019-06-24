@@ -15,6 +15,11 @@ namespace RapeEngine
 		Button music_test;
 		
 		/// <summary>
+		/// Button for the BGS test.
+		/// </summary>
+		Button bgs_test;
+		
+		/// <summary>
 		/// Button for the sound test.
 		/// </summary>
 		Button test_se;
@@ -50,26 +55,37 @@ namespace RapeEngine
 			var resources = new ComponentResourceManager(typeof(MainForm));
 			
 			music_test = new Button();
+			bgs_test = new Button();
 			test_se = new Button();
+			
 			update_timer = new Timer(components);
 			
 			SuspendLayout();
 			
 			// Music test.
-			music_test.Location = new System.Drawing.Point(88, 42);
+			music_test.Location = new System.Drawing.Point(100, 50);
 			music_test.Name = "music_test";
-			music_test.Size = new System.Drawing.Size(103, 23);
+			music_test.Size = new System.Drawing.Size(80, 20);
 			music_test.TabIndex = 0;
-			music_test.Text = "Play BGM test.ogg";
+			music_test.Text = "Play BGM";
 			music_test.UseVisualStyleBackColor = true;
 			music_test.Click += MusicTest;
 			
+			// BGS test.
+			bgs_test.Location = new System.Drawing.Point(200, 50);
+			bgs_test.Name = "music_test";
+			bgs_test.Size = new System.Drawing.Size(80, 20);
+			bgs_test.TabIndex = 0;
+			bgs_test.Text = "Play BGS";
+			bgs_test.UseVisualStyleBackColor = true;
+			bgs_test.Click += BGSTest;
+			
 			// Effect test.
-			test_se.Location = new System.Drawing.Point(88, 102);
+			test_se.Location = new System.Drawing.Point(100, 100);
 			test_se.Name = "test_se";
-			test_se.Size = new System.Drawing.Size(103, 28);
+			test_se.Size = new System.Drawing.Size(80, 20);
 			test_se.TabIndex = 1;
-			test_se.Text = "Play SE test.ogg";
+			test_se.Text = "Play SE";
 			test_se.UseVisualStyleBackColor = true;
 			test_se.Click += EffectTest;
 			
@@ -80,6 +96,7 @@ namespace RapeEngine
 			// Main form.
 			ClientSize = new System.Drawing.Size(1280, 720);
 			Controls.Add(music_test);
+			Controls.Add(bgs_test);
 			Controls.Add(test_se);
 			Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			MaximizeBox = false;
