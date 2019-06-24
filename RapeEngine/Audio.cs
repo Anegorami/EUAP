@@ -100,6 +100,27 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
+		/// A method to update the state of the Audio System.
+		/// </summary>
+		public static void Update() {
+			// Looping.
+			long current_position_bytes = Bass.BASS_ChannelGetPosition(bgm_channel);
+			double current_position = Bass.BASS_ChannelBytes2Seconds(bgm_channel, current_position_bytes);
+			if (current_position > bgm_current.LoopEnd) {
+				double new_position = bgm_current.LoopStart + (current_position - bgm_current.LoopEnd);
+				Bass.BASS_ChannelSetPosition(bgm_channel, new_position);
+			}
+		}
+		
+		/// <summary>
+		/// A method to check if the BGM is playing.
+		/// </summary>
+		/// <returns>True, if the BGM is playing, false otherwise.</returns>
+		public static bool IsBGMPlaying() {
+			return Bass.BASS_ChannelIsActive(bgm_channel) == BASSActive.BASS_ACTIVE_PLAYING;
+		}
+		
+		/// <summary>
 		/// A method to play the background music.
 		/// </summary>
 		/// <param name="bgmname">Filename without the extension.</param>
@@ -112,8 +133,12 @@ namespace RapeEngine {
 			Bass.BASS_ChannelPlay(bgm_channel, false);
 		}
 		
+		/// <summary>
+		/// A method to stop currently playing BGM.
+		/// TODO: Make a volume fade.
+		/// </summary>
 		public static void StopBGM () {
-			
+			Bass.BASS_ChannelStop(bgm_channel);
 		}
 		
 		/// <summary>
@@ -123,19 +148,6 @@ namespace RapeEngine {
 		public static void PlaySE(string sename) {
 			int se_channel = Bass.BASS_SampleGetChannel(se[sename], false);
 			Bass.BASS_ChannelPlay(se_channel, false);
-		}
-		
-		/// <summary>
-		/// A method to update the state of the Audio System.
-		/// </summary>
-		public static void Update() {
-			// Looping.
-			long current_position_bytes = Bass.BASS_ChannelGetPosition(bgm_channel);
-			double current_position = Bass.BASS_ChannelBytes2Seconds(bgm_channel, current_position_bytes);
-			if (current_position > bgm_current.LoopEnd) {
-				double new_position = bgm_current.LoopStart + (current_position - bgm_current.LoopEnd);
-				Bass.BASS_ChannelSetPosition(bgm_channel, new_position);
-			}
 		}
 	}
 }

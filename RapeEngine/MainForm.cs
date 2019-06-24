@@ -32,7 +32,11 @@ namespace RapeEngine {
 		/// <param name="sender">EventHandler parameter. Required, but not used.</param>
 		/// <param name="args">EventHandler parameter. Required, but not used.</param>
 		void MusicTest(object sender, EventArgs args) {
-			Audio.PlayBGM("test");
+			if (!Audio.IsBGMPlaying()) {
+				Audio.PlayBGM("test");
+			} else {
+				Audio.StopBGM();
+			}
 		}
 		
 		/// <summary>
