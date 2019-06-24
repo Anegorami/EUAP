@@ -23,7 +23,7 @@ namespace RapeEngine {
 		/// <param name="sender">EventHandler parameter. Required, but not used.</param>
 		/// <param name="args">EventHandler parameter. Required, but not used.</param>
 		void Step(object sender, EventArgs args) {
-			Audio.Update();
+			Audio.Update(0.1);
 		}
 		
 		/// <summary>

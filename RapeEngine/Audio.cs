@@ -57,9 +57,30 @@ namespace RapeEngine {
 		static int bgm_channel;
 		
 		/// <summary>
+		/// Fade timer. Used in FadeIn/FadeOut methods.
+		/// </summary>
+		static double bgm_fade_timer;
+		
+		/// <summary>
+		/// Initial value of fade timer. Used in FadeIn/FadeOut methods.
+		/// </summary>
+		static double bgm_fade_timer_max;
+		
+		/// <summary>
 		/// Dictionary to store the loaded SE samples' handles.
 		/// </summary>
 		static readonly Dictionary<string, int> se = new Dictionary<string, int>();
+		
+		/// <summary>
+		/// Delegate for an update action.
+		/// </summary>
+		/// <param name="dt">Time taken to draw the current frame.</param>
+		delegate void UpdateAction(double dt);
+		
+		/// <summary>
+		/// Update event. Called in Update method.
+		/// </summary>
+		static event UpdateAction OnUpdate;
 		
 		/// <summary>
 		/// Initialization function.
@@ -83,8 +104,8 @@ namespace RapeEngine {
 				// Extracting loop timepoints from the tags.
 				// Also, big thanks to Microsoft for overengineering String to Double conversion.
 				TAG_INFO tag = BassTags.BASS_TAG_GetFromFile(filename);
-				double loop_start = Negolib.S2D(tag.NativeTag("loop_start"));
-				double loop_end = Negolib.S2D(tag.NativeTag("loop_end"));
+				double loop_start = Negolib.StringToDouble(tag.NativeTag("loop_start"));
+				double loop_end = Negolib.StringToDouble(tag.NativeTag("loop_end"));
 				
 				bgm[Negolib.MakeKey(filename)] = new Bgm(sample, loop_start, loop_end);
 			}
@@ -100,15 +121,38 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
-		/// A method to update the state of the Audio System.
+		/// An update method. Should be bound to Graphic.OnUpdate event.
 		/// </summary>
-		public static void Update() {
-			// Looping.
+		/// <param name="dt">Time taken to draw the current frame.</param>
+		public static void Update(double dt) {
+			Looping();
+			OnUpdate(dt);
+		}
+		
+		/// <summary>
+		/// A method to loop active BGM and BGS. A permanent part of Update.
+		/// </summary>
+		static void Looping() {
 			long current_position_bytes = Bass.BASS_ChannelGetPosition(bgm_channel);
 			double current_position = Bass.BASS_ChannelBytes2Seconds(bgm_channel, current_position_bytes);
 			if (current_position > bgm_current.LoopEnd) {
 				double new_position = bgm_current.LoopStart + (current_position - bgm_current.LoopEnd);
 				Bass.BASS_ChannelSetPosition(bgm_channel, new_position);
+			}
+		}
+		
+		/// <summary>
+		/// A method to fadeout the BGM.
+		/// </summary>
+		/// <param name="dt">Time taken to draw the current frame.</param>
+		static void BGMFadeOut(double dt) {
+			bgm_fade_timer = Math.Max(bgm_fade_timer - dt, 0);
+			double volume = bgm_fade_timer / bgm_fade_timer_max;
+			Bass.BASS_ChannelSetAttribute(bgm_channel, BASSAttribute.BASS_ATTRIB_VOL, (float) volume);
+			
+			if (Math.Abs(volume) < Double.Epsilon) {
+				Bass.BASS_ChannelStop(bgm_channel);
+				OnUpdate -= BGMFadeOut;
 			}
 		}
 		
@@ -137,8 +181,11 @@ namespace RapeEngine {
 		/// A method to stop currently playing BGM.
 		/// TODO: Make a volume fade.
 		/// </summary>
-		public static void StopBGM () {
-			Bass.BASS_ChannelStop(bgm_channel);
+		/// <param name="time">Fade time (in seconds).</param>
+		public static void StopBGM (double time = 1) {
+			bgm_fade_timer = time;
+			bgm_fade_timer_max = time;
+			OnUpdate += BGMFadeOut;
 		}
 		
 		/// <summary>
