@@ -10,21 +10,6 @@ namespace RapeEngine
 		IContainer components;
 		
 		/// <summary>
-		/// Button for the music test.
-		/// </summary>
-		Button music_test;
-		
-		/// <summary>
-		/// Button for the sound test.
-		/// </summary>
-		Button test_se;
-		
-		/// <summary>
-		/// Update timer.
-		/// </summary>
-		Timer update_timer;
-		
-		/// <summary>
 		/// Disposes resources used by the form.
 		/// </summary>
 		/// <param name="disposing">True if managed resources should be disposed, false otherwise.</param>
@@ -45,49 +30,40 @@ namespace RapeEngine
 		/// Bullshit. Just keep your hands clean and everything will be OK.
 		/// </summary>
 		void InitializeComponent() {
-			// Init.
-			components = new Container();
-			var resources = new ComponentResourceManager(typeof(MainForm));
-			
-			music_test = new Button();
-			test_se = new Button();
-			update_timer = new Timer(components);
-			
-			SuspendLayout();
-			
-			// Music test.
-			music_test.Location = new System.Drawing.Point(88, 42);
-			music_test.Name = "music_test";
-			music_test.Size = new System.Drawing.Size(103, 23);
-			music_test.TabIndex = 0;
-			music_test.Text = "Play BGM test.ogg";
-			music_test.UseVisualStyleBackColor = true;
-			music_test.Click += MusicTest;
-			
-			// Effect test.
-			test_se.Location = new System.Drawing.Point(88, 102);
-			test_se.Name = "test_se";
-			test_se.Size = new System.Drawing.Size(103, 28);
-			test_se.TabIndex = 1;
-			test_se.Text = "Play SE test.ogg";
-			test_se.UseVisualStyleBackColor = true;
-			test_se.Click += EffectTest;
-			
-			// Update timer.
-			update_timer.Enabled = true;
-			update_timer.Tick += Step;
-			
-			// Main form.
-			ClientSize = new System.Drawing.Size(1280, 720);
-			Controls.Add(music_test);
-			Controls.Add(test_se);
-			Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			MaximizeBox = false;
-			Name = "MainForm";
-			StartPosition = FormStartPosition.CenterScreen;
-			Text = "Rape Engine";
-			
-			ResumeLayout(false);
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            this.openGLControl1 = new SharpGL.OpenGLControl();
+            ((System.ComponentModel.ISupportInitialize)(this.openGLControl1)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // openGLControl1
+            // 
+            this.openGLControl1.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.openGLControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.openGLControl1.DrawFPS = false;
+            this.openGLControl1.Location = new System.Drawing.Point(0, 0);
+            this.openGLControl1.Name = "openGLControl1";
+            this.openGLControl1.OpenGLVersion = SharpGL.Version.OpenGLVersion.OpenGL2_1;
+            this.openGLControl1.RenderContextType = SharpGL.RenderContextType.NativeWindow;
+            this.openGLControl1.RenderTrigger = SharpGL.RenderTrigger.Manual;
+            this.openGLControl1.Size = new System.Drawing.Size(1280, 720);
+            this.openGLControl1.TabIndex = 0;
+            // 
+            // MainForm
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1280, 720);
+            this.Controls.Add(this.openGLControl1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Rape Engine";
+            ((System.ComponentModel.ISupportInitialize)(this.openGLControl1)).EndInit();
+            this.ResumeLayout(false);
+
 		}
-	}
+
+        private SharpGL.OpenGLControl openGLControl1;
+    }
 }

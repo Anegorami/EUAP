@@ -61,6 +61,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Audio.cs" />
+    <Compile Include="GameLoopExecutor.cs" />
+    <Compile Include="GameMain.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
