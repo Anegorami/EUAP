@@ -8,7 +8,7 @@ namespace RapeEngine {
 	/// <summary>
 	/// Singleton for audio-related operations (such as background music playing).
 	/// </summary>
-	public sealed class Audio {
+	public static class Audio {
 		/// <summary>
 		/// Small structure to keep all of the BGM-related data in one place.
 		/// </summary>
@@ -44,32 +44,28 @@ namespace RapeEngine {
 		/// <summary>
 		/// Dictionary for storing the loaded BGM samples.
 		/// </summary>
-		readonly Dictionary<string, Bgm> bgm = new Dictionary<string, Bgm>();
+		static readonly Dictionary<string, Bgm> bgm = new Dictionary<string, Bgm>();
 		
 		/// <summary>
 		/// Active BGM.
 		/// </summary>
-		Bgm bgm_current;
+		static Bgm bgm_current;
 		
 		/// <summary>
 		/// Active BGM channel handle.
 		/// </summary>
-		int bgm_channel;
+		static int bgm_channel;
 		
 		/// <summary>
 		/// Dictionary to store the loaded SE samples' handles.
 		/// </summary>
-		readonly Dictionary<string, int> se = new Dictionary<string, int>();
+		static readonly Dictionary<string, int> se = new Dictionary<string, int>();
 		
 		/// <summary>
-		/// Static instance poiter.
+		/// Initialization function.
 		/// </summary>
-		static Audio instance;
-		
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		Audio(IntPtr handle) {
+		/// <param name="handle">Main window handle. Required for the BASS library initialization.</param>
+		public static void Init(IntPtr handle) {
 			// BASS library initialization.
 			// -1 is the default audio device.
 			// 48000 is the sample rate.
@@ -104,27 +100,10 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
-		/// Initialization function.
-		/// Designed to keep the "handle" argument out of getInstance() calls.
-		/// </summary>
-		/// <param name="handle">Main window handle. Required for the BASS library initialization.</param>
-		public static void Init(IntPtr handle) {
-			instance = new Audio(handle);
-		}
-		
-		/// <summary>
-		/// A method for getting the singletone instance.
-		/// </summary>
-		/// <returns>Audio object.</returns>
-		public static Audio GetInstance() {
-			return instance;
-		}
-		
-		/// <summary>
 		/// A method to play the background music.
 		/// </summary>
 		/// <param name="bgmname">Filename without the extension.</param>
-		public void PlayBGM(string bgmname) {
+		public static void PlayBGM(string bgmname) {
 			// Stops any current BGM and frees the channel.
 			Bass.BASS_ChannelStop(bgm_channel);
 			
@@ -133,11 +112,15 @@ namespace RapeEngine {
 			Bass.BASS_ChannelPlay(bgm_channel, false);
 		}
 		
+		public static void StopBGM () {
+			
+		}
+		
 		/// <summary>
 		/// A method to play the sound effect.
 		/// </summary>
 		/// <param name="sename">Filename without the extension.</param>
-		public void PlaySE(string sename) {
+		public static void PlaySE(string sename) {
 			int se_channel = Bass.BASS_SampleGetChannel(se[sename], false);
 			Bass.BASS_ChannelPlay(se_channel, false);
 		}
@@ -145,7 +128,7 @@ namespace RapeEngine {
 		/// <summary>
 		/// A method to update the state of the Audio System.
 		/// </summary>
-		public void Update() {
+		public static void Update() {
 			// Looping.
 			long current_position_bytes = Bass.BASS_ChannelGetPosition(bgm_channel);
 			double current_position = Bass.BASS_ChannelBytes2Seconds(bgm_channel, current_position_bytes);

@@ -6,8 +6,6 @@ namespace RapeEngine {
 	/// Main form.
 	/// </summary>
 	public sealed partial class MainForm: Form {
-		Audio audio;
-		
 		/// <summary>
 		/// Basic constructor.
 		/// </summary>
@@ -17,7 +15,6 @@ namespace RapeEngine {
 			
 			// Constructor code goes here...
 			Audio.Init(Handle);
-			audio = Audio.GetInstance();
 		}
 		
 		/// <summary>
@@ -26,7 +23,7 @@ namespace RapeEngine {
 		/// <param name="sender">EventHandler parameter. Required, but not used.</param>
 		/// <param name="args">EventHandler parameter. Required, but not used.</param>
 		void Step(object sender, EventArgs args) {
-			audio.Update();
+			Audio.Update();
 		}
 		
 		/// <summary>
@@ -35,7 +32,7 @@ namespace RapeEngine {
 		/// <param name="sender">EventHandler parameter. Required, but not used.</param>
 		/// <param name="args">EventHandler parameter. Required, but not used.</param>
 		void MusicTest(object sender, EventArgs args) {
-			audio.PlayBGM("test");
+			Audio.PlayBGM("test");
 		}
 		
 		/// <summary>
@@ -44,7 +41,7 @@ namespace RapeEngine {
 		/// <param name="sender">EventHandler parameter. Required, but not used.</param>
 		/// <param name="args">EventHandler parameter. Required, but not used.</param>
 		void EffectTest(object sender, EventArgs args) {
-			audio.PlaySE("test");
+			Audio.PlaySE("test");
 		}
 	}
 }
