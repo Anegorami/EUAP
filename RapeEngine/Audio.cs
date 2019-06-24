@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Globalization;
 using System.Collections.Generic;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Tags;
@@ -43,21 +42,6 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
-		/// Directory with the background music (in Ogg Vorbis format) to scan.
-		/// </summary>
-		const string BGM_DIR = "bgm";
-		
-		/// <summary>
-		/// Directory with the sound effects (in Ogg Vorbis format) to scan.
-		/// </summary>
-		const string SE_DIR = "se";
-		
-		/// <summary>
-		/// This determines how much instancies of the same sample can play simulteniously.
-		/// </summary>
-		const int SE_MAX = 10;
-		
-		/// <summary>
 		/// Dictionary for storing the loaded BGM samples.
 		/// </summary>
 		readonly Dictionary<string, Bgm> bgm = new Dictionary<string, Bgm>();
@@ -89,37 +73,33 @@ namespace RapeEngine {
 			// BASS library initialization.
 			// -1 is the default audio device.
 			// 48000 is the sample rate.
-			// The "handle" is the main window's handle to bind audio device to (for Windows Audio Mixer).
+			// The "handle" is the main window's handle to bind the audio device to (for Windows Audio Mixer).
 			Bass.BASS_Init(-1, 48000, BASSInit.BASS_DEVICE_DEFAULT, handle);
 			
 			// BGM folder scanning.
-			foreach (string filename in Directory.GetFiles(BGM_DIR)) {
+			foreach (string filename in Directory.GetFiles("bgm")) {
 				// Sample loading.
 				// First 0 is the starting point.
 				// Second 0 is the length (meaning the whole file).
 				// The 1 is the maximum channels playing the same sample simulteniously. For BGM, 1 is a good choice.
 				int sample = Bass.BASS_SampleLoad(filename, 0, 0, 1, BASSFlag.BASS_DEFAULT);
 				
-				TAG_INFO tag = BassTags.BASS_TAG_GetFromFile(filename);
-				
 				// Extracting loop timepoints from the tags.
 				// Also, big thanks to Microsoft for overengineering String to Double conversion.
-				double loop_start = double.Parse(tag.NativeTag("loop_start"), CultureInfo.InvariantCulture);
-				double loop_end = double.Parse(tag.NativeTag("loop_end"), CultureInfo.InvariantCulture);
+				TAG_INFO tag = BassTags.BASS_TAG_GetFromFile(filename);
+				double loop_start = Negolib.S2D(tag.NativeTag("loop_start"));
+				double loop_end = Negolib.S2D(tag.NativeTag("loop_end"));
 				
-				string key = Negolib.MakeKey(filename);
-				
-				bgm[key] = new Bgm(sample, loop_start, loop_end);
+				bgm[Negolib.MakeKey(filename)] = new Bgm(sample, loop_start, loop_end);
 			}
 			
 			// SE folder scanning.
-			foreach (string filename in Directory.GetFiles(SE_DIR)) {
-				string key = Negolib.MakeKey(filename);
-				
+			foreach (string filename in Directory.GetFiles("se")) {
 				// Sample loading.
 				// First 0 is the starting point.
 				// Second 0 is the length (meaning the whole file).
-				se[key] = Bass.BASS_SampleLoad(filename, 0, 0, SE_MAX, BASSFlag.BASS_DEFAULT);
+				// 10 is an amount af channels that can play the same sample simulteniously.
+				se[Negolib.MakeKey(filename)] = Bass.BASS_SampleLoad(filename, 0, 0, 10, BASSFlag.BASS_DEFAULT);
 			}
 		}
 		

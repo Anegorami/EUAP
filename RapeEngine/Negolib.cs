@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace RapeEngine
@@ -14,9 +15,16 @@ namespace RapeEngine
 		/// <param name="filename">Filename to make a key from.</param>
 		/// <returns>Key.</returns>
 		public static string MakeKey(string filename) {
-			// Oddly enough, () have no power here.
-			string value = Regex.Match(filename, Regex.Escape("\\") + ".+" + Regex.Escape(".")).Value;
-			return value.Substring(1, value.Length - 2);
+			return Regex.Match(filename, Regex.Escape("\\") + "(.+)" + Regex.Escape(".")).Groups[1].Value;
+		}
+		
+		/// <summary>
+		/// String to double conversion function. Because I don't want to write "using System.Globalization;" EVERYWHERE.
+		/// </summary>
+		/// <param name="value">String to convert. Must use the dot as the delimeter.</param>
+		/// <returns>Destringed Double.</returns>
+		public static double S2D(string value) {
+			return double.Parse(value, CultureInfo.InvariantCulture);
 		}
 	}
 }
