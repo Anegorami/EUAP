@@ -30,6 +30,11 @@ namespace RapeEngine
 		Button test_se;
 		
 		/// <summary>
+		/// Button for the voice test.
+		/// </summary>
+		Button test_vo;
+		
+		/// <summary>
 		/// Master volume trackbar.
 		/// </summary>
 		TrackBar master;
@@ -53,6 +58,16 @@ namespace RapeEngine
 		/// SE volume trackbar.
 		/// </summary>
 		TrackBar se;
+		
+		/// <summary>
+		/// VO volume trackbar.
+		/// </summary>
+		TrackBar vo;
+		
+		/// <summary>
+		/// VO modifier trackbar.
+		/// </summary>
+		TrackBar vom;
 		
 		/// <summary>
 		/// Update timer.
@@ -84,16 +99,21 @@ namespace RapeEngine
 			components = new Container();
 			var resources = new ComponentResourceManager(typeof(MainForm));
 			
+			// Buttons.
 			music_test = new Button();
 			bgs_test = new Button();
 			test_me = new Button();
 			test_se = new Button();
+			test_vo = new Button();
 			
+			// Trackbars.
 			master = new TrackBar();
 			bgm = new TrackBar();
 			bgs = new TrackBar();
 			me = new TrackBar();
 			se = new TrackBar();
+			vo = new TrackBar();
+			vom = new TrackBar();
 			
 			update_timer = new Timer(components);
 			
@@ -135,6 +155,15 @@ namespace RapeEngine
 			test_se.UseVisualStyleBackColor = true;
 			test_se.Click += EffectTest;
 			
+			// Voice test.
+			test_vo.Location = new System.Drawing.Point(300, 100);
+			test_vo.Name = "test_vo";
+			test_vo.Size = new System.Drawing.Size(80, 20);
+			test_vo.TabIndex = 1;
+			test_vo.Text = "Play VO";
+			test_vo.UseVisualStyleBackColor = true;
+			test_vo.Click += VoiceTest;
+			
 			// Master volume trackbar.
 			master.Location = new System.Drawing.Point(500, 100);
 			master.Name = "master";
@@ -145,7 +174,7 @@ namespace RapeEngine
 			master.ValueChanged += ChangeMasterVolume;
 			
 			// BGM volume trackbar.
-			bgm.Location = new System.Drawing.Point(500, 200);
+			bgm.Location = new System.Drawing.Point(500, 150);
 			bgm.Name = "bgm";
 			bgm.Size = new System.Drawing.Size(400, 45);
 			bgm.TabIndex = 2;
@@ -154,7 +183,7 @@ namespace RapeEngine
 			bgm.ValueChanged += ChangeBGMVolume;
 			
 			// BGS volume trackbar.
-			bgs.Location = new System.Drawing.Point(500, 300);
+			bgs.Location = new System.Drawing.Point(500, 200);
 			bgs.Name = "bgs";
 			bgs.Size = new System.Drawing.Size(400, 45);
 			bgs.TabIndex = 2;
@@ -163,7 +192,7 @@ namespace RapeEngine
 			bgs.ValueChanged += ChangeBGSVolume;
 			
 			// ME volume trackbar.
-			me.Location = new System.Drawing.Point(500, 400);
+			me.Location = new System.Drawing.Point(500, 250);
 			me.Name = "me";
 			me.Size = new System.Drawing.Size(400, 45);
 			me.TabIndex = 2;
@@ -172,7 +201,7 @@ namespace RapeEngine
 			me.ValueChanged += ChangeMEVolume;
 			
 			// SE volume trackbar.
-			se.Location = new System.Drawing.Point(500, 500);
+			se.Location = new System.Drawing.Point(500, 300);
 			se.Name = "se";
 			se.Size = new System.Drawing.Size(400, 45);
 			se.TabIndex = 2;
@@ -180,21 +209,47 @@ namespace RapeEngine
 			se.Value = 100;
 			se.ValueChanged += ChangeSEVolume;
 			
+			// VO volume trackbar.
+			vo.Location = new System.Drawing.Point(500, 350);
+			vo.Name = "vo";
+			vo.Size = new System.Drawing.Size(400, 45);
+			vo.TabIndex = 2;
+			vo.Maximum = 100;
+			vo.Value = 100;
+			vo.ValueChanged += ChangeVOVolume;
+			
+			// VO modifier trackbar.
+			vom.Location = new System.Drawing.Point(500, 400);
+			vom.Name = "vom";
+			vom.Size = new System.Drawing.Size(400, 45);
+			vom.TabIndex = 2;
+			vom.Maximum = 100;
+			vom.Value = 20;
+			vom.ValueChanged += ChangeVOModifier;
+			
 			// Update timer.
 			update_timer.Enabled = true;
 			update_timer.Tick += Step;
 			
 			// Main form.
 			ClientSize = new System.Drawing.Size(1280, 720);
+			
+			// Buttons.
 			Controls.Add(music_test);
 			Controls.Add(bgs_test);
 			Controls.Add(test_me);
 			Controls.Add(test_se);
+			Controls.Add(test_vo);
+			
+			// Trackbars.
 			Controls.Add(master);
 			Controls.Add(bgm);
 			Controls.Add(bgs);
 			Controls.Add(me);
 			Controls.Add(se);
+			Controls.Add(vo);
+			Controls.Add(vom);
+			
 			Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			MaximizeBox = false;
 			Name = "MainForm";

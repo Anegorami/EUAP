@@ -6,7 +6,7 @@ using Un4seen.Bass.AddOn.Tags;
 
 namespace RapeEngine {
 	/// <summary>
-	/// Static class for audio-related operations.
+	/// Static class for the audio-related operations.
 	/// </summary>
 	public static class Audio {
 		/// <summary>
@@ -31,7 +31,7 @@ namespace RapeEngine {
 			/// <summary>
 			/// Constructor.
 			/// </summary>
-			/// <param name="filename">File name.</param>
+			/// <param name="filename">Filename.</param>
 			public LoopedSample(string filename) {
 				// Sample loading.
 				// First 0 is the starting point.
@@ -119,6 +119,16 @@ namespace RapeEngine {
 		static readonly Dictionary<string, int> se = new Dictionary<string, int>();
 		
 		/// <summary>
+		/// Dictionary to store the loaded VO samples' handles.
+		/// </summary>
+		static readonly Dictionary<string, int> vo = new Dictionary<string, int>();
+		
+		/// <summary>
+		/// Active VO channel handle.
+		/// </summary>
+		static int vo_channel;
+		
+		/// <summary>
 		/// Master volume.
 		/// </summary>
 		static double volume_master = 1;
@@ -144,6 +154,21 @@ namespace RapeEngine {
 		static double volume_se = 1;
 		
 		/// <summary>
+		/// VO volume.
+		/// </summary>
+		static double volume_vo = 1;
+		
+		/// <summary>
+		/// BGM volume modifier when the Voice is playing.
+		/// </summary>
+		static double vo_over_bgm_modifier = 0.2;
+		
+		/// <summary>
+		/// Flag to restore the BGM volume after VO finished playing.
+		/// </summary>
+		static bool check_for_vo_end;
+		
+		/// <summary>
 		/// Delegate for an update action.
 		/// </summary>
 		/// <param name="dt">Time taken to draw the current frame.</param>
@@ -159,7 +184,8 @@ namespace RapeEngine {
 		/// </summary>
 		static double real_volume_bgm {
 			get {
-				return volume_master * volume_bgm;
+				double base_volume = volume_master * volume_bgm;
+				return (IsVOPlaying)? base_volume * vo_over_bgm_modifier: base_volume;
 			}
 		}
 		
@@ -191,6 +217,15 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
+		/// Virtual field to get the real VO volume.
+		/// </summary>
+		static double real_volume_vo {
+			get {
+				return volume_master * volume_vo;
+			}
+		}
+		
+		/// <summary>
 		/// A field to check if the BGM is playing.
 		/// </summary>
 		public static bool IsBGMPlaying {
@@ -218,6 +253,15 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
+		/// A field to check if the VO is playing.
+		/// </summary>
+		public static bool IsVOPlaying {
+			get {
+				return IsPlaying(vo_channel);
+			}
+		}
+		
+		/// <summary>
 		/// Master volume field.
 		/// </summary>
 		public static double VolumeMaster {
@@ -229,6 +273,7 @@ namespace RapeEngine {
 				SetVolume(bgm_channel, real_volume_bgm);
 				SetVolume(bgs_channel, real_volume_bgs);
 				SetVolume(me_channel, real_volume_me);
+				SetVolume(vo_channel, real_volume_vo);
 			}
 		}
 		
@@ -284,6 +329,32 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
+		/// VO volume field.
+		/// </summary>
+		public static double VolumeVO {
+			get {
+				return volume_vo;
+			}
+			set {
+				volume_vo = value;
+				SetVolume(vo_channel, real_volume_vo);
+			}
+		}
+		
+		/// <summary>
+		/// VO modifier field.
+		/// </summary>
+		public static double VOModifier {
+			get {
+				return vo_over_bgm_modifier;
+			}
+			set {
+				vo_over_bgm_modifier = value;
+				SetVolume(bgm_channel, real_volume_bgm);
+			}
+		}
+		
+		/// <summary>
 		/// A method to check if the channel is playing.
 		/// </summary>
 		/// <param name="channel">Channel to check.</param>
@@ -307,9 +378,9 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
-		/// A method to change channel's volume.
+		/// A method to change a channel's volume.
 		/// </summary>
-		/// <param name="channel">Channel to change volume on.</param>
+		/// <param name="channel">Channel to change the volume on.</param>
 		/// <param name="volume">Volume level. Must be in between 0 (mute) and 1 (100% volume).</param>
 		static void SetVolume(int channel, double volume) {
 			Bass.BASS_ChannelSetAttribute(channel, BASSAttribute.BASS_ATTRIB_VOL, (float) volume);
@@ -332,7 +403,7 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
-		/// A method to fadein the BGM.
+		/// A method to fadein the BGM after the ME.
 		/// Should be binded to the OnUpdate event.
 		/// </summary>
 		/// <param name="dt">Time taken to draw the current frame.</param>
@@ -371,7 +442,7 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
-		/// A method to fadein the BGS.
+		/// A method to fadein the BGS after the ME.
 		/// Should be binded to the OnUpdate event.
 		/// </summary>
 		/// <param name="dt">Time taken to draw the current frame.</param>
@@ -439,6 +510,15 @@ namespace RapeEngine {
 				// 10 is an amount af channels that can play the same sample simulteniously.
 				se[Negolib.MakeKey(filename)] = Bass.BASS_SampleLoad(filename, 0, 0, 10, BASSFlag.BASS_DEFAULT);
 			}
+			
+			// VO folder scanning.
+			foreach (string filename in Directory.GetFiles("vo")) {
+				// Sample loading.
+				// First 0 is the starting point.
+				// Second 0 is the length (meaning the whole file).
+				// 1 is an amount af channels that can play the same sample simulteniously.
+				vo[Negolib.MakeKey(filename)] = Bass.BASS_SampleLoad(filename, 0, 0, 1, BASSFlag.BASS_DEFAULT);
+			}
 		}
 		
 		/// <summary>
@@ -448,6 +528,12 @@ namespace RapeEngine {
 		public static void Update(double dt) {
 			Looping(bgm_current, bgm_channel);
 			Looping(bgs_current, bgs_channel);
+			
+			if ((check_for_vo_end) && (!IsVOPlaying)) {
+				check_for_vo_end = false;
+				SetVolume(bgm_channel, real_volume_bgm);
+			}
+			
 			if (OnUpdate != null) {
 				OnUpdate(dt);
 			}
@@ -504,7 +590,7 @@ namespace RapeEngine {
 			bgs_channel = Bass.BASS_SampleGetChannel(bgs_current.Sample, false);
 			
 			Bass.BASS_ChannelPlay(bgs_channel, false);
-			SetVolume(bgm_channel, real_volume_bgs);
+			SetVolume(bgs_channel, real_volume_bgs);
 			
 			if (Math.Abs(bgs_current.LoopStart + 1) < Double.Epsilon) {
 				ActivateAutoLooping(bgs_channel);
@@ -543,6 +629,8 @@ namespace RapeEngine {
 				OnUpdate += BGSFadeIn;
 			}
 			
+			Bass.BASS_ChannelStop(vo_channel);
+			
 			me_channel = Bass.BASS_SampleGetChannel(me[mename], false);
 			Bass.BASS_ChannelPlay(me_channel, false);
 			SetVolume(me_channel, real_volume_me);
@@ -556,6 +644,30 @@ namespace RapeEngine {
 			int channel = Bass.BASS_SampleGetChannel(se[sename], false);
 			Bass.BASS_ChannelPlay(channel, false);
 			SetVolume(channel, real_volume_se);
+		}
+		
+		/// <summary>
+		/// A method to play a voice file.
+		/// </summary>
+		/// <param name="voname">Filename without the extension.</param>
+		public static void PlayVO(string voname) {
+			// Stops any current VO and frees the channel.
+			Bass.BASS_ChannelStop(vo_channel);
+			
+			vo_channel = Bass.BASS_SampleGetChannel(vo[voname], false);
+			
+			Bass.BASS_ChannelPlay(vo_channel, false);
+			SetVolume(vo_channel, real_volume_vo);
+			
+			SetVolume(bgm_channel, real_volume_bgm);
+			check_for_vo_end = true;
+		}
+		
+		/// <summary>
+		/// A method to stop the voice file.
+		/// </summary>
+		public static void StopVO() {
+			Bass.BASS_ChannelStop(vo_channel);
 		}
 	}
 }

@@ -70,24 +70,76 @@ namespace RapeEngine {
 			Audio.PlaySE("test");
 		}
 		
+		/// <summary>
+		/// Voice test method.
+		/// </summary>
+		/// <param name="sender">Delegate parameter. Required, but not used.</param>
+		/// <param name="args">Delegate parameter. Required, but not used.</param>
+		void VoiceTest(object sender, EventArgs args) {
+			Audio.PlayVO("test");
+		}
+		
+		/// <summary>
+		/// A method to relay the master volume change.
+		/// </summary>
+		/// <param name="sender">Delegate parameter. Required, but not used.</param>
+		/// <param name="args">Delegate parameter. Required, but not used.</param>
 		void ChangeMasterVolume(object sender, EventArgs args) {
 			Audio.VolumeMaster = (double) master.Value / 100;
 		}
 		
+		/// <summary>
+		/// A method to relay the BGM volume change.
+		/// </summary>
+		/// <param name="sender">Delegate parameter. Required, but not used.</param>
+		/// <param name="args">Delegate parameter. Required, but not used.</param>
 		void ChangeBGMVolume(object sender, EventArgs args) {
 			Audio.VolumeBGM = (double) bgm.Value / 100;
 		}
 		
+		/// <summary>
+		/// A method to relay the BGS volume change.
+		/// </summary>
+		/// <param name="sender">Delegate parameter. Required, but not used.</param>
+		/// <param name="args">Delegate parameter. Required, but not used.</param>
 		void ChangeBGSVolume(object sender, EventArgs args) {
 			Audio.VolumeBGS = (double) bgs.Value / 100;
 		}
 		
+		/// <summary>
+		/// A method to relay the ME volume change.
+		/// </summary>
+		/// <param name="sender">Delegate parameter. Required, but not used.</param>
+		/// <param name="args">Delegate parameter. Required, but not used.</param>
 		void ChangeMEVolume(object sender, EventArgs args) {
 			Audio.VolumeME = (double) me.Value / 100;
 		}
 		
+		/// <summary>
+		/// A method to relay the SE volume change.
+		/// </summary>
+		/// <param name="sender">Delegate parameter. Required, but not used.</param>
+		/// <param name="args">Delegate parameter. Required, but not used.</param>
 		void ChangeSEVolume(object sender, EventArgs args) {
 			Audio.VolumeSE = (double) se.Value / 100;
+		}
+		
+		/// <summary>
+		/// A method to relay the VO volume change.
+		/// </summary>
+		/// <param name="sender">Delegate parameter. Required, but not used.</param>
+		/// <param name="args">Delegate parameter. Required, but not used.</param>
+		void ChangeVOVolume(object sender, EventArgs args) {
+			Audio.VolumeVO = (double) vo.Value / 100;
+		}
+		
+		/// <summary>
+		/// A method to relay the VO modifier change.
+		/// </summary>
+		/// <param name="sender">Delegate parameter. Required, but not used.</param>
+		/// <param name="args">Delegate parameter. Required, but not used.</param>
+		void ChangeVOModifier(object sender, EventArgs args) {
+			Audio.VOModifier = (double) vom.Value / 100;
 		}
 	}
 }
