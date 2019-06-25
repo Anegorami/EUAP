@@ -20,8 +20,8 @@ namespace RapeEngine {
 		/// <summary>
 		/// Update method. SHOULD be replaced with one-per-frame update event.
 		/// </summary>
-		/// <param name="sender">EventHandler parameter. Required, but not used.</param>
-		/// <param name="args">EventHandler parameter. Required, but not used.</param>
+		/// <param name="sender">Delegate parameter. Required, but not used.</param>
+		/// <param name="args">Delegate parameter. Required, but not used.</param>
 		void Step(object sender, EventArgs args) {
 			Audio.Update(0.1);
 		}
@@ -29,10 +29,10 @@ namespace RapeEngine {
 		/// <summary>
 		/// Music test method.
 		/// </summary>
-		/// <param name="sender">EventHandler parameter. Required, but not used.</param>
-		/// <param name="args">EventHandler parameter. Required, but not used.</param>
+		/// <param name="sender">Delegate parameter. Required, but not used.</param>
+		/// <param name="args">Delegate parameter. Required, but not used.</param>
 		void MusicTest(object sender, EventArgs args) {
-			if (!Audio.IsBGMPlaying()) {
+			if (!Audio.IsBGMPlaying) {
 				Audio.PlayBGM("test");
 			} else {
 				Audio.StopBGM();
@@ -42,10 +42,10 @@ namespace RapeEngine {
 		/// <summary>
 		/// BGS test method.
 		/// </summary>
-		/// <param name="sender">EventHandler parameter. Required, but not used.</param>
-		/// <param name="args">EventHandler parameter. Required, but not used.</param>
+		/// <param name="sender">Delegate parameter. Required, but not used.</param>
+		/// <param name="args">Delegate parameter. Required, but not used.</param>
 		void BGSTest(object sender, EventArgs args) {
-			if (!Audio.IsBGSPlaying()) {
+			if (!Audio.IsBGSPlaying) {
 				Audio.PlayBGS("test");
 			} else {
 				Audio.StopBGS();
@@ -53,10 +53,19 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
-		/// Sound test method.
+		/// Music effect test method.
 		/// </summary>
-		/// <param name="sender">EventHandler parameter. Required, but not used.</param>
-		/// <param name="args">EventHandler parameter. Required, but not used.</param>
+		/// <param name="sender">Delegate parameter. Required, but not used.</param>
+		/// <param name="args">Delegate parameter. Required, but not used.</param>
+		void MusicEffectTest(object sender, EventArgs args) {
+			Audio.PlayME("test");
+		}
+		
+		/// <summary>
+		/// Sound Effect test method.
+		/// </summary>
+		/// <param name="sender">Delegate parameter. Required, but not used.</param>
+		/// <param name="args">Delegate parameter. Required, but not used.</param>
 		void EffectTest(object sender, EventArgs args) {
 			Audio.PlaySE("test");
 		}
