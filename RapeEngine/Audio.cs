@@ -417,6 +417,11 @@ namespace RapeEngine {
 			// Stops any current BGM and frees the channel.
 			Bass.BASS_ChannelStop(bgm_channel);
 			
+			// ME cleanup.
+			Bass.BASS_ChannelStop(me_channel);
+			OnUpdate -= BGMFadeOut;
+			OnUpdate -= BGMFadeIn;
+			
 			bgm_current = bgm[bgmname];
 			bgm_channel = Bass.BASS_SampleGetChannel(bgm_current.Sample, false);
 			
@@ -445,6 +450,11 @@ namespace RapeEngine {
 		public static void PlayBGS(string bgsname) {
 			// Stops any current BGS and frees the channel.
 			Bass.BASS_ChannelStop(bgs_channel);
+			
+			// ME cleanup.
+			Bass.BASS_ChannelStop(me_channel);
+			OnUpdate -= BGSFadeOut;
+			OnUpdate -= BGSFadeIn;
 			
 			bgs_current = bgs[bgsname];
 			bgs_channel = Bass.BASS_SampleGetChannel(bgs_current.Sample, false);
