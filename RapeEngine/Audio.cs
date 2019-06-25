@@ -47,8 +47,8 @@ namespace RapeEngine {
 					LoopStart = Negolib.StringToDouble(test);
 					LoopEnd = Negolib.StringToDouble(tag.NativeTag("loop_end"));
 				} else {
-					LoopStart = 0;
-					LoopEnd = Bass.BASS_ChannelBytes2Seconds(Sample, Bass.BASS_SampleGetInfo(Sample).length);
+					LoopStart = -1;
+					LoopEnd = -1;
 				}
 			}
 		}
@@ -155,7 +155,8 @@ namespace RapeEngine {
 		/// </summary>
 		/// <param name="dt">Time taken to draw the current frame.</param>
 		public static void Update(double dt) {
-			Looping();
+			Looping(bgm_current, bgm_channel);
+			Looping(bgs_current, bgs_channel);
 			if (OnUpdate != null) {
 				OnUpdate(dt);
 			}
@@ -164,12 +165,15 @@ namespace RapeEngine {
 		/// <summary>
 		/// A method to loop active BGM and BGS. A permanent part of Update.
 		/// </summary>
-		static void Looping() {
-			long current_position_bytes = Bass.BASS_ChannelGetPosition(bgm_channel);
-			double current_position = Bass.BASS_ChannelBytes2Seconds(bgm_channel, current_position_bytes);
-			if (current_position > bgm_current.LoopEnd) {
-				double new_position = bgm_current.LoopStart + (current_position - bgm_current.LoopEnd);
-				Bass.BASS_ChannelSetPosition(bgm_channel, new_position);
+		/// <param name="current">LoopedSample to check.</param>
+		/// <param name="channel">Channel to modify.</param>
+		static void Looping(LoopedSample current, int channel) {
+			// BGM looping.
+			long current_position_bytes = Bass.BASS_ChannelGetPosition(channel);
+			double current_position = Bass.BASS_ChannelBytes2Seconds(channel, current_position_bytes);
+			if (current_position > current.LoopEnd) {
+				double new_position = current.LoopStart + (current_position - current.LoopEnd);
+				Bass.BASS_ChannelSetPosition(channel, new_position);
 			}
 		}
 		
@@ -221,7 +225,11 @@ namespace RapeEngine {
 			
 			bgm_current = bgm[bgmname];
 			bgm_channel = Bass.BASS_SampleGetChannel(bgm_current.Sample, false);
+			
 			Bass.BASS_ChannelPlay(bgm_channel, false);
+			if (Math.Abs(bgm_current.LoopStart + 1) < Double.Epsilon) {
+				Bass.BASS_ChannelFlags(bgm_channel, BASSFlag.BASS_SAMPLE_LOOP, BASSFlag.BASS_SAMPLE_LOOP);
+			}
 		}
 		
 		/// <summary>
@@ -252,7 +260,11 @@ namespace RapeEngine {
 			
 			bgs_current = bgs[bgsname];
 			bgs_channel = Bass.BASS_SampleGetChannel(bgs_current.Sample, false);
+			
 			Bass.BASS_ChannelPlay(bgs_channel, false);
+			if (Math.Abs(bgs_current.LoopStart + 1) < Double.Epsilon) {
+				Bass.BASS_ChannelFlags(bgs_channel, BASSFlag.BASS_SAMPLE_LOOP, BASSFlag.BASS_SAMPLE_LOOP);
+			}
 		}
 		
 		/// <summary>
@@ -270,8 +282,7 @@ namespace RapeEngine {
 		/// </summary>
 		/// <param name="sename">Filename without the extension.</param>
 		public static void PlaySE(string sename) {
-			int se_channel = Bass.BASS_SampleGetChannel(se[sename], false);
-			Bass.BASS_ChannelPlay(se_channel, false);
+			Bass.BASS_ChannelPlay(Bass.BASS_SampleGetChannel(se[sename], false), false);
 		}
 	}
 }
