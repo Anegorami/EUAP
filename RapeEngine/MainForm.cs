@@ -69,5 +69,25 @@ namespace RapeEngine {
 		void EffectTest(object sender, EventArgs args) {
 			Audio.PlaySE("test");
 		}
+		
+		void ChangeMasterVolume(object sender, EventArgs args) {
+			Audio.VolumeMaster = (double) master.Value / 100;
+		}
+		
+		void ChangeBGMVolume(object sender, EventArgs args) {
+			Audio.VolumeBGM = (double) bgm.Value / 100;
+		}
+		
+		void ChangeBGSVolume(object sender, EventArgs args) {
+			Audio.VolumeBGS = (double) bgs.Value / 100;
+		}
+		
+		void ChangeMEVolume(object sender, EventArgs args) {
+			Audio.VolumeME = (double) me.Value / 100;
+		}
+		
+		void ChangeSEVolume(object sender, EventArgs args) {
+			Audio.VolumeSE = (double) se.Value / 100;
+		}
 	}
 }

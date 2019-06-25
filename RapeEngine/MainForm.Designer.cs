@@ -30,6 +30,31 @@ namespace RapeEngine
 		Button test_se;
 		
 		/// <summary>
+		/// Master volume trackbar.
+		/// </summary>
+		TrackBar master;
+		
+		/// <summary>
+		/// BGM volume trackbar.
+		/// </summary>
+		TrackBar bgm;
+		
+		/// <summary>
+		/// BGS volume trackbar.
+		/// </summary>
+		TrackBar bgs;
+		
+		/// <summary>
+		/// ME volume trackbar.
+		/// </summary>
+		TrackBar me;
+		
+		/// <summary>
+		/// SE volume trackbar.
+		/// </summary>
+		TrackBar se;
+		
+		/// <summary>
 		/// Update timer.
 		/// </summary>
 		Timer update_timer;
@@ -63,6 +88,12 @@ namespace RapeEngine
 			bgs_test = new Button();
 			test_me = new Button();
 			test_se = new Button();
+			
+			master = new TrackBar();
+			bgm = new TrackBar();
+			bgs = new TrackBar();
+			me = new TrackBar();
+			se = new TrackBar();
 			
 			update_timer = new Timer(components);
 			
@@ -104,6 +135,51 @@ namespace RapeEngine
 			test_se.UseVisualStyleBackColor = true;
 			test_se.Click += EffectTest;
 			
+			// Master volume trackbar.
+			master.Location = new System.Drawing.Point(500, 100);
+			master.Name = "master";
+			master.Size = new System.Drawing.Size(400, 45);
+			master.TabIndex = 2;
+			master.Maximum = 100;
+			master.Value = 100;
+			master.ValueChanged += ChangeMasterVolume;
+			
+			// BGM volume trackbar.
+			bgm.Location = new System.Drawing.Point(500, 200);
+			bgm.Name = "bgm";
+			bgm.Size = new System.Drawing.Size(400, 45);
+			bgm.TabIndex = 2;
+			bgm.Maximum = 100;
+			bgm.Value = 100;
+			bgm.ValueChanged += ChangeBGMVolume;
+			
+			// BGS volume trackbar.
+			bgs.Location = new System.Drawing.Point(500, 300);
+			bgs.Name = "bgs";
+			bgs.Size = new System.Drawing.Size(400, 45);
+			bgs.TabIndex = 2;
+			bgs.Maximum = 100;
+			bgs.Value = 100;
+			bgs.ValueChanged += ChangeBGSVolume;
+			
+			// ME volume trackbar.
+			me.Location = new System.Drawing.Point(500, 400);
+			me.Name = "me";
+			me.Size = new System.Drawing.Size(400, 45);
+			me.TabIndex = 2;
+			me.Maximum = 100;
+			me.Value = 100;
+			me.ValueChanged += ChangeMEVolume;
+			
+			// SE volume trackbar.
+			se.Location = new System.Drawing.Point(500, 500);
+			se.Name = "se";
+			se.Size = new System.Drawing.Size(400, 45);
+			se.TabIndex = 2;
+			se.Maximum = 100;
+			se.Value = 100;
+			se.ValueChanged += ChangeSEVolume;
+			
 			// Update timer.
 			update_timer.Enabled = true;
 			update_timer.Tick += Step;
@@ -114,6 +190,11 @@ namespace RapeEngine
 			Controls.Add(bgs_test);
 			Controls.Add(test_me);
 			Controls.Add(test_se);
+			Controls.Add(master);
+			Controls.Add(bgm);
+			Controls.Add(bgs);
+			Controls.Add(me);
+			Controls.Add(se);
 			Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			MaximizeBox = false;
 			Name = "MainForm";

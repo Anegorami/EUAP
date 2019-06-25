@@ -6,11 +6,11 @@ using Un4seen.Bass.AddOn.Tags;
 
 namespace RapeEngine {
 	/// <summary>
-	/// Singleton for audio-related operations (such as background music playing).
+	/// Static class for audio-related operations.
 	/// </summary>
 	public static class Audio {
 		/// <summary>
-		/// Small structure to keep all of the BGM-related data in one place.
+		/// Small structure to keep all of the sample-related data in one place.
 		/// </summary>
 		struct LoopedSample {
 			/// <summary>
@@ -119,18 +119,38 @@ namespace RapeEngine {
 		static readonly Dictionary<string, int> se = new Dictionary<string, int>();
 		
 		/// <summary>
+		/// BGM volume.
+		/// </summary>
+		static double volume_bgm = 1;
+		
+		/// <summary>
+		/// BGS volume.
+		/// </summary>
+		static double volume_bgs = 1;
+		
+		/// <summary>
+		/// ME volume.
+		/// </summary>
+		static double volume_me = 1;
+		
+		/// <summary>
+		/// SE volume.
+		/// </summary>
+		static double volume_se = 1;
+		
+		/// <summary>
 		/// Delegate for an update action.
 		/// </summary>
 		/// <param name="dt">Time taken to draw the current frame.</param>
 		delegate void UpdateAction(double dt);
 		
 		/// <summary>
-		/// Update event. Called in Update method.
+		/// Update event. Called in the Update method.
 		/// </summary>
 		static event UpdateAction OnUpdate;
 		
 		/// <summary>
-		/// A field to check if BGM is playing.
+		/// A field to check if the BGM is playing.
 		/// </summary>
 		public static bool IsBGMPlaying {
 			get {
@@ -139,7 +159,7 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
-		/// A field to check if BGS is playing.
+		/// A field to check if the BGS is playing.
 		/// </summary>
 		public static bool IsBGSPlaying {
 			get {
@@ -148,11 +168,74 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
-		/// A field to check if ME is playing.
+		/// A field to check if the ME is playing.
 		/// </summary>
 		public static bool IsMEPlaying {
 			get {
 				return IsPlaying(me_channel);
+			}
+		}
+		
+		/// <summary>
+		/// Master volume field.
+		/// </summary>
+		public static double VolumeMaster {
+			get {
+				return (double) Bass.BASS_GetVolume();
+			}
+			set {
+				Bass.BASS_SetVolume((float) value);
+			}
+		}
+		
+		/// <summary>
+		/// BGM volume field.
+		/// </summary>
+		public static double VolumeBGM {
+			get {
+				return volume_bgm;
+			}
+			set {
+				volume_bgm = value;
+				SetVolume(bgm_channel, value);
+			}
+		}
+		
+		/// <summary>
+		/// BGS volume field.
+		/// </summary>
+		public static double VolumeBGS {
+			get {
+				return volume_bgs;
+			}
+			set {
+				volume_bgs = value;
+				SetVolume(bgs_channel, value);
+			}
+		}
+		
+		/// <summary>
+		/// ME volume field.
+		/// </summary>
+		public static double VolumeME {
+			get {
+				return volume_me;
+			}
+			set {
+				volume_me = value;
+				SetVolume(me_channel, value);
+			}
+		}
+		
+		/// <summary>
+		/// SE volume field.
+		/// </summary>
+		public static double VolumeSE {
+			get {
+				return volume_se;
+			}
+			set {
+				volume_se = value;
 			}
 		}
 		
@@ -195,7 +278,7 @@ namespace RapeEngine {
 		/// <param name="dt">Time taken to draw the current frame.</param>
 		static void BGMFadeOut(double dt) {
 			bgm_fade_timer = Math.Max(bgm_fade_timer - dt, 0);
-			double volume = bgm_fade_timer / bgm_fade_timer_max;
+			double volume = (bgm_fade_timer / bgm_fade_timer_max) * volume_bgm;
 			SetVolume(bgm_channel, volume);
 			
 			if (Math.Abs(volume) < Double.Epsilon) {
@@ -206,7 +289,7 @@ namespace RapeEngine {
 		
 		/// <summary>
 		/// A method to fadein the BGM.
-		/// Should be bound to the OnUpdate event.
+		/// Should be binded to the OnUpdate event.
 		/// </summary>
 		/// <param name="dt">Time taken to draw the current frame.</param>
 		static void BGMFadeIn(double dt) {
@@ -219,8 +302,8 @@ namespace RapeEngine {
 			}
 			
 			bgm_fade_timer = Math.Max(bgm_fade_timer - dt, 0);
-			double volume = bgm_fade_timer / bgm_fade_timer_max;
-			SetVolume(bgm_channel, 1 - volume);
+			double volume = (bgm_fade_timer / bgm_fade_timer_max) / volume_bgm;
+			SetVolume(bgm_channel, volume_bgm - volume);
 			
 			if (Math.Abs(volume) < Double.Epsilon) {
 				OnUpdate -= BGMFadeIn;
@@ -229,12 +312,12 @@ namespace RapeEngine {
 		
 		/// <summary>
 		/// A method to fadeout the BGS.
-		/// Should be bound to the OnUpdate event.
+		/// Should be binded to the OnUpdate event.
 		/// </summary>
 		/// <param name="dt">Time taken to draw the current frame.</param>
 		static void BGSFadeOut(double dt) {
 			bgs_fade_timer = Math.Max(bgs_fade_timer - dt, 0);
-			double volume = bgs_fade_timer / bgs_fade_timer_max;
+			double volume = (bgs_fade_timer / bgs_fade_timer_max) * volume_bgs;
 			SetVolume(bgs_channel, volume);
 			
 			if (Math.Abs(volume) < Double.Epsilon) {
@@ -245,7 +328,7 @@ namespace RapeEngine {
 		
 		/// <summary>
 		/// A method to fadein the BGS.
-		/// Should be bound to the OnUpdate event.
+		/// Should be binded to the OnUpdate event.
 		/// </summary>
 		/// <param name="dt">Time taken to draw the current frame.</param>
 		static void BGSFadeIn(double dt) {
@@ -258,8 +341,8 @@ namespace RapeEngine {
 			}
 			
 			bgs_fade_timer = Math.Max(bgs_fade_timer - dt, 0);
-			double volume = bgs_fade_timer / bgs_fade_timer_max;
-			SetVolume(bgs_channel, 1 - volume);
+			double volume = (bgs_fade_timer / bgs_fade_timer_max) / volume_bgs;
+			SetVolume(bgs_channel, volume_bgs - volume);
 			
 			if (Math.Abs(volume) < Double.Epsilon) {
 				OnUpdate -= BGSFadeIn;
@@ -338,6 +421,8 @@ namespace RapeEngine {
 			bgm_channel = Bass.BASS_SampleGetChannel(bgm_current.Sample, false);
 			
 			Bass.BASS_ChannelPlay(bgm_channel, false);
+			SetVolume(bgm_channel, volume_bgm);
+			
 			if (Math.Abs(bgm_current.LoopStart + 1) < Double.Epsilon) {
 				ActivateAutoLooping(bgm_channel);
 			}
@@ -365,6 +450,8 @@ namespace RapeEngine {
 			bgs_channel = Bass.BASS_SampleGetChannel(bgs_current.Sample, false);
 			
 			Bass.BASS_ChannelPlay(bgs_channel, false);
+			SetVolume(bgm_channel, volume_bgs);
+			
 			if (Math.Abs(bgs_current.LoopStart + 1) < Double.Epsilon) {
 				ActivateAutoLooping(bgs_channel);
 			}
@@ -404,6 +491,7 @@ namespace RapeEngine {
 			
 			me_channel = Bass.BASS_SampleGetChannel(me[mename], false);
 			Bass.BASS_ChannelPlay(me_channel, false);
+			SetVolume(me_channel, volume_me);
 		}
 		
 		/// <summary>
@@ -411,7 +499,9 @@ namespace RapeEngine {
 		/// </summary>
 		/// <param name="sename">Filename without the extension.</param>
 		public static void PlaySE(string sename) {
-			Bass.BASS_ChannelPlay(Bass.BASS_SampleGetChannel(se[sename], false), false);
+			int channel = Bass.BASS_SampleGetChannel(se[sename], false);
+			Bass.BASS_ChannelPlay(channel, false);
+			SetVolume(channel, volume_se);
 		}
 	}
 }
