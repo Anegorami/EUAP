@@ -6,15 +6,26 @@ namespace RapeEngine {
 	/// Main form.
 	/// </summary>
 	public sealed partial class MainForm: Form {
-        GameMain gameMain;
-		
+        private GameMain gameMain;
+        private bool doFullscreen;
+
 		/// <summary>
 		/// Basic constructor.
 		/// </summary>
 		public MainForm() {
 			// Required.
 			InitializeComponent();
-            gameMain = new GameMain();
+
+            doFullscreen = false; // for testing purposes
+
+            if(doFullscreen)
+            {
+                FormBorderStyle = FormBorderStyle.None;
+                WindowState = FormWindowState.Maximized;
+            }
+
+            gameMain = new GameMain(openGLControl1);
+            gameMain.GameMainBegin();
 		}
 	}
 }

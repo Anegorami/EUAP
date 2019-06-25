@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpGL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,14 @@ namespace RapeEngine
     {
 
         private GameLoopExecutor gameLoopExecutor;
+        private OpenGL gl;
+        private OpenGLControl glGUI_Element;
+
+        public GameMain(OpenGLControl glControl)
+        {
+            gl = glControl.OpenGL;
+            glGUI_Element = glControl;
+        }
 
         public void GameMainBegin()
         {
@@ -19,6 +28,7 @@ namespace RapeEngine
         void GameLoop(double elapsedTimeMs)
         {
 
+            glGUI_Element.Refresh();
         }
     }
 }
