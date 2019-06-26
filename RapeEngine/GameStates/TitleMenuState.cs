@@ -37,11 +37,11 @@ namespace RapeEngine.GameStates
             gl.Begin(OpenGL.GL_TRIANGLES);
             {
                 gl.Color(1.0, 0.0, 0.0, 0.5);
-                gl.Vertex(-1, 0, -6f);
+                gl.Vertex(-50f, 0, 0f);
                 gl.Color(0.0, 1.0, 0.0);
-                gl.Vertex(1, 0, -6f);
+                gl.Vertex(50f, 0, 0f);
                 gl.Color(0.0, 0.0, 1.0);
-                gl.Vertex(0, 1, -6f);
+                gl.Vertex(0, 50f, 0f);
             }
             gl.End();
             gl.Finish();
