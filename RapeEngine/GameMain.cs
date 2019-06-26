@@ -26,7 +26,10 @@ namespace RapeEngine
         static void GameLoop(double elapsedTimeMs)
         {
 
-            glGUI_Element.Refresh();
+            if (glGUI_Element.RenderTrigger == RenderTrigger.Manual)
+            {
+                glGUI_Element.Refresh();
+            }
         }
     }
 }
