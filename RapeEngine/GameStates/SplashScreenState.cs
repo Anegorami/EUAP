@@ -9,6 +9,7 @@ namespace RapeEngine.GameStates
     public class SplashScreenState: IGameObject
     {
         StateSystemManager stateManager;
+        public const string STATE_ID = "splashScreenState";
 
         public SplashScreenState(StateSystemManager stateSystemManager)
         {

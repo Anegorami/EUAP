@@ -22,7 +22,7 @@ namespace RapeEngine
 
             doFullscreen = false; // for testing purposes
 
-            if (doFullscreen)
+            if(doFullscreen)
             {
                 FormBorderStyle = FormBorderStyle.None;
                 WindowState = FormWindowState.Maximized;

@@ -51,7 +51,6 @@ namespace RapeEngine.GameStates
             currentState = stateStore[stateId];
 
             previousState = temp;
-
         }
 
         public void RevertSetState()
