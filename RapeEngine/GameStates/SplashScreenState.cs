@@ -12,9 +12,9 @@ namespace RapeEngine.GameStates
         public const string STATE_ID = "splashScreenState";
         private const int TIME_SPLASH_ON_SCREEN_SECONDS = 3;
 
-        private StateSystemManager stateManager;
+        private readonly StateSystemManager stateManager;
+        private readonly OpenGL gl;
         private float timeLeftOnScreen = TIME_SPLASH_ON_SCREEN_SECONDS;
-        private OpenGL gl;
 
         public SplashScreenState(StateSystemManager stateSystemManager, OpenGL openGL)
         {
@@ -28,7 +28,7 @@ namespace RapeEngine.GameStates
             if(timeLeftOnScreen <= 0)
             {
                 timeLeftOnScreen = TIME_SPLASH_ON_SCREEN_SECONDS;
-
+                stateManager.SetState(TitleMenuState.STATE_ID);
             }
         }
 
