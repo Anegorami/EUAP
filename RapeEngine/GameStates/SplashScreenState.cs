@@ -7,14 +7,16 @@ using System.Threading.Tasks;
 
 namespace RapeEngine.GameStates
 {
-    public class SplashScreenState: IGameObject
+    public class SplashScreenState: IGameState
     {
-        public const string STATE_ID = "splashScreenState";
+        public const string STATE_ID = "SplashScreenState";
         private const int TIME_SPLASH_ON_SCREEN_SECONDS = 3;
 
         private readonly StateSystemManager stateManager;
         private readonly OpenGL gl;
         private float timeLeftOnScreen = TIME_SPLASH_ON_SCREEN_SECONDS;
+
+        public string StateId { get { return STATE_ID; } }
 
         public SplashScreenState(StateSystemManager stateSystemManager, OpenGL openGL)
         {

@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace RapeEngine.GameStates
 {
-    public class TitleMenuState : IGameObject
+    public class TitleMenuState : IGameState
     {
-        public const string STATE_ID = "titleMenuState";
-
+        public static string STATE_ID = "TitleMenuState";
         private readonly OpenGL gl;
         private readonly StateSystemManager stateManager;
 
         private double currentRotation = 0;
+
+        public string StateId { get { return STATE_ID; } }
 
         public TitleMenuState(StateSystemManager stateSystemManager, OpenGL openGl)
         {

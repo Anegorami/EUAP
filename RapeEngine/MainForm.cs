@@ -32,8 +32,8 @@ namespace RapeEngine
             SplashScreenState splashScreen = new SplashScreenState(stateSystemManager, openGLControl1.OpenGL);
             TitleMenuState titleMenu = new TitleMenuState(stateSystemManager, openGLControl1.OpenGL);
 
-            stateSystemManager.AddState(SplashScreenState.STATE_ID, splashScreen);
-            stateSystemManager.AddState(TitleMenuState.STATE_ID, titleMenu);
+            stateSystemManager.AddState(splashScreen);
+            stateSystemManager.AddState(titleMenu);
 
             stateSystemManager.SetState(SplashScreenState.STATE_ID);
 

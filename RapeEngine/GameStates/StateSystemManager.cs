@@ -10,9 +10,9 @@ namespace RapeEngine.GameStates
 {
     public class StateSystemManager
     {
-        private Dictionary<String, IGameObject> stateStore = new Dictionary<string, IGameObject>();
-        private IGameObject currentState = null;
-        private IGameObject previousState = null;
+        private Dictionary<String, IGameState> stateStore = new Dictionary<string, IGameState>();
+        private IGameState currentState = null;
+        private IGameState previousState = null;
 
         public void Update(double elapsedTimeMs)
         {
@@ -35,11 +35,11 @@ namespace RapeEngine.GameStates
             return stateStore.ContainsKey(stateId);
         }
 
-        public void AddState(string stateId, IGameObject state)
+        public void AddState(IGameState state)
         {
-            if(!stateStore.ContainsKey(stateId))
+            if(!stateStore.ContainsKey(state.StateId))
             {
-                stateStore.Add(stateId, state);
+                stateStore.Add(state.StateId, state);
             }
         }
 
@@ -48,7 +48,7 @@ namespace RapeEngine.GameStates
             //I'll let this throw an exception if they try and change state with a wrong ID.
             //Also temp is here so in case it does throw an exception we don't modify the internal
             //state
-            IGameObject temp = currentState;
+            IGameState temp = currentState;
             currentState = stateStore[stateId];
 
             previousState = temp;
@@ -69,9 +69,9 @@ namespace RapeEngine.GameStates
         public bool TestAddState()
         {
             OpenGL gl = new OpenGL();
-            IGameObject obj = new SplashScreenState(this, gl);
+            IGameState obj = new SplashScreenState(this, gl);
             
-            AddState("splash", obj);
+            AddState(obj);
 
             if(!stateStore.ContainsKey("splash"))
             {
@@ -88,14 +88,14 @@ namespace RapeEngine.GameStates
         public bool TestStateTransitions()
         {
             OpenGL gl = new OpenGL();
-            IGameObject obj = new SplashScreenState(this, gl);
-            IGameObject obj1 = new SplashScreenState(this, gl);
-            IGameObject temp;
+            IGameState obj = new SplashScreenState(this, gl);
+            IGameState obj1 = new SplashScreenState(this, gl);
+            IGameState temp;
 
-            AddState("splash", obj);
-            AddState("splash2", obj1);
+            AddState(obj);
+            AddState(obj1);
 
-            AddState("splash", obj); //shouldn't do anything
+            AddState(obj); //shouldn't do anything
             if(stateStore.Count > 2)
             {
                 return false;

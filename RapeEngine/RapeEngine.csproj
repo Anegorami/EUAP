@@ -63,6 +63,7 @@
     <Compile Include="Audio.cs" />
     <Compile Include="GameLoopExecutor.cs" />
     <Compile Include="GameMain.cs" />
+    <Compile Include="GameStates\IGameState.cs" />
     <Compile Include="GameStates\SplashScreenState.cs" />
     <Compile Include="GameStates\TitleMenuState.cs" />
     <Compile Include="IGameObject.cs" />
