@@ -1,4 +1,5 @@
 ﻿using RapeEngine.GameStates;
+using SharpGL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,8 +68,9 @@ namespace RapeEngine.GameStates
 
         public bool TestAddState()
         {
-            IGameObject obj = new SplashScreenState(this);
-
+            OpenGL gl = new OpenGL();
+            IGameObject obj = new SplashScreenState(this, gl);
+            
             AddState("splash", obj);
 
             if(!stateStore.ContainsKey("splash"))
@@ -80,12 +82,14 @@ namespace RapeEngine.GameStates
                 return false;
             }
 
+            stateStore.Clear();
             return true;
         }
         public bool TestStateTransitions()
         {
-            IGameObject obj = new SplashScreenState(this);
-            IGameObject obj1 = new SplashScreenState(this);
+            OpenGL gl = new OpenGL();
+            IGameObject obj = new SplashScreenState(this, gl);
+            IGameObject obj1 = new SplashScreenState(this, gl);
             IGameObject temp;
 
             AddState("splash", obj);
@@ -131,6 +135,8 @@ namespace RapeEngine.GameStates
             {
                 return false;
             }
+
+            stateStore.Clear();
 
             return true;
         }

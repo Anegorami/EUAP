@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpGL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,21 +9,34 @@ namespace RapeEngine.GameStates
 {
     public class SplashScreenState: IGameObject
     {
-        StateSystemManager stateManager;
         public const string STATE_ID = "splashScreenState";
+        private const int TIME_SPLASH_ON_SCREEN_SECONDS = 3;
 
-        public SplashScreenState(StateSystemManager stateSystemManager)
+        private StateSystemManager stateManager;
+        private float timeLeftOnScreen = TIME_SPLASH_ON_SCREEN_SECONDS;
+        private OpenGL gl;
+
+        public SplashScreenState(StateSystemManager stateSystemManager, OpenGL openGL)
         {
             stateManager = stateSystemManager;
+            gl = openGL;
         }
         public void Update(double elapsedTimeMs)
         {
+            timeLeftOnScreen -= (float)(elapsedTimeMs / 1000);
 
+            if(timeLeftOnScreen <= 0)
+            {
+                timeLeftOnScreen = TIME_SPLASH_ON_SCREEN_SECONDS;
+
+            }
         }
 
         public void Render()
         {
-
+            gl.ClearColor(1, 1, 1, 1);
+            gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT);
+            gl.Finish();
         }
     }
 }
