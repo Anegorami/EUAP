@@ -9,12 +9,13 @@ namespace RapeEngine {
         private GameMain gameMain;
         private bool doFullscreen;
 
-		/// <summary>
-		/// Basic constructor.
-		/// </summary>
-		public MainForm() {
-			// Required.
-			InitializeComponent();
+        /// <summary>
+        /// Basic constructor.
+        /// </summary>
+        public MainForm()
+        {
+            // Required.
+            InitializeComponent();
 
             doFullscreen = false; // for testing purposes
 
@@ -24,8 +25,7 @@ namespace RapeEngine {
                 WindowState = FormWindowState.Maximized;
             }
 
-            gameMain = new GameMain(openGLControl1);
-            gameMain.GameMainBegin();
-		}
-	}
+            GameMain.GameMainBegin(openGLControl1, stateSystemManager);
+        }
+    }
 }
