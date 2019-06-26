@@ -20,6 +20,7 @@ namespace RapeEngine
         {
             callback = loopCallback;
             stopWatch = new Stopwatch();
+            stopWatch.Start();
             previousTime = 0;
             Application.Idle += new EventHandler(OnApplicationEnterIdle);
         }
