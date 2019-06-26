@@ -1,12 +1,15 @@
-﻿using System;
+﻿using RapeEngine.GameStates;
+using SharpGL;
+using System;
 using System.Windows.Forms;
 
-namespace RapeEngine {
-	/// <summary>
-	/// Main form.
-	/// </summary>
-	public sealed partial class MainForm: Form {
-        private GameMain gameMain;
+namespace RapeEngine
+{
+    /// <summary>
+    /// Main form.
+    /// </summary>
+    public sealed partial class MainForm : Form
+    {
         private bool doFullscreen;
 
         /// <summary>
@@ -19,11 +22,15 @@ namespace RapeEngine {
 
             doFullscreen = false; // for testing purposes
 
-            if(doFullscreen)
+            if (doFullscreen)
             {
                 FormBorderStyle = FormBorderStyle.None;
                 WindowState = FormWindowState.Maximized;
             }
+
+            StateSystemManager stateSystemManager = new StateSystemManager();
+            bool success = stateSystemManager.TestAddState();
+            success = stateSystemManager.TestStateTransitions();
 
             GameMain.GameMainBegin(openGLControl1, stateSystemManager);
         }
