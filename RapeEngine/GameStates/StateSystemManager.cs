@@ -64,5 +64,78 @@ namespace RapeEngine.GameStates
             }
         }
 
+        #region Tests
+
+        public bool TestAddState()
+        {
+            IGameObject obj = new SplashScreenState(this);
+
+            AddState("splash", obj);
+
+            if(!stateStore.ContainsKey("splash"))
+            {
+                return false;
+            }
+            else if(!Exists("splash"))
+            {
+                return false;
+            }
+
+            return true;
+        }
+        public bool TestStateTransitions()
+        {
+            IGameObject obj = new SplashScreenState(this);
+            IGameObject obj1 = new SplashScreenState(this);
+            IGameObject temp;
+
+            AddState("splash", obj);
+            AddState("splash2", obj1);
+
+            AddState("splash", obj); //shouldn't do anything
+            if(stateStore.Count > 2)
+            {
+                return false;
+            }
+
+            //should change state
+            temp = currentState;
+            SetState("splash");
+
+            if(temp == currentState)
+            {
+                return false;
+            }
+
+            //revert shouldn't do anything if only one loaded in, nothing to revert to
+            temp = currentState;
+            RevertSetState();
+
+            if(temp != currentState)
+            {
+                return false;
+            }
+
+            //should set but then revert state back to the old
+            temp = currentState;
+            SetState("splash2");
+            RevertSetState();
+            if(temp != currentState)
+            {
+                return false;
+            }
+
+            //shouldn't revert twice
+            temp = currentState;
+            RevertSetState();
+            if(temp != currentState)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        #endregion
     }
 }
