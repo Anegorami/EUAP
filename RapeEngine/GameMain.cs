@@ -14,13 +14,13 @@ namespace RapeEngine
         static private GameLoopExecutor gameLoopExecutor;
         static private OpenGL gl;
         static private OpenGLControl glGUI_Element;
-        static private StateSystemManager stateManager;
+        static private StateSystemManager gameGlobalStateManager;
 
         static public void GameMainBegin(OpenGLControl glControl, StateSystemManager stateSystemManager)
         {
             gl = glControl.OpenGL;
             glGUI_Element = glControl;
-            stateManager = stateSystemManager;
+            gameGlobalStateManager = stateSystemManager;
 
             gl.ClearColor(0, 0, 0, 1);
 
@@ -29,7 +29,8 @@ namespace RapeEngine
 
         static void GameLoop(double elapsedTimeMs)
         {
-            stateManager.Update(elapsedTimeMs);
+            gameGlobalStateManager.Update(elapsedTimeMs);
+            gameGlobalStateManager.Render();
 
             if (glGUI_Element.RenderTrigger == RenderTrigger.Manual)
             {
