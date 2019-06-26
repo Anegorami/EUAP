@@ -7,25 +7,23 @@ using System.Threading.Tasks;
 
 namespace RapeEngine
 {
-    public class GameMain
+    static public class GameMain
     {
 
-        private GameLoopExecutor gameLoopExecutor;
-        private OpenGL gl;
-        private OpenGLControl glGUI_Element;
+        static private GameLoopExecutor gameLoopExecutor;
+        static private OpenGL gl;
+        static private OpenGLControl glGUI_Element;
 
-        public GameMain(OpenGLControl glControl)
+        static public void GameMainBegin(OpenGLControl glControl, StateSystemManager stateSystemManager)
         {
             gl = glControl.OpenGL;
             glGUI_Element = glControl;
         }
 
-        public void GameMainBegin()
-        {
             gameLoopExecutor = new GameLoopExecutor(GameLoop);
         }
 
-        void GameLoop(double elapsedTimeMs)
+        static void GameLoop(double elapsedTimeMs)
         {
 
             glGUI_Element.Refresh();
