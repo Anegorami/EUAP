@@ -233,8 +233,8 @@ namespace RapeEngine
 			
 			// Main form.
 			ClientSize = new System.Drawing.Size(1280, 720);
-			
-			// Buttons.
+      
+      // Buttons.
 			Controls.Add(music_test);
 			Controls.Add(bgs_test);
 			Controls.Add(test_me);
