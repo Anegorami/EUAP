@@ -30,7 +30,6 @@ namespace RapeEngine
 		/// Bullshit. Just keep your hands clean and everything will be OK.
 		/// </summary>
 		void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.openGLControl1 = new SharpGL.OpenGLControl();
             ((System.ComponentModel.ISupportInitialize)(this.openGLControl1)).BeginInit();
@@ -41,6 +40,7 @@ namespace RapeEngine
             this.openGLControl1.BackColor = System.Drawing.SystemColors.ControlDark;
             this.openGLControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.openGLControl1.DrawFPS = false;
+            this.openGLControl1.FrameRate = 60;
             this.openGLControl1.Location = new System.Drawing.Point(0, 0);
             this.openGLControl1.Name = "openGLControl1";
             this.openGLControl1.OpenGLVersion = SharpGL.Version.OpenGLVersion.OpenGL2_1;
