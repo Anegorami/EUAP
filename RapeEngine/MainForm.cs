@@ -33,16 +33,9 @@ namespace RapeEngine
                 FormBorderStyle = FormBorderStyle.FixedSingle;
             }
 
-            StateSystemManager stateSystemManager = new StateSystemManager();
-
-            stateSystemManager.AddState(new SplashScreenState(stateSystemManager, openGLControl1.OpenGL));
-            stateSystemManager.AddState(new TitleMenuState(stateSystemManager, openGLControl1.OpenGL));
-
-            stateSystemManager.SetState(SplashScreenState.STATE_ID);
-
             Setup2DGraphics(ClientSize.Width, ClientSize.Height);
 
-            GameMain.GameMainBegin(openGLControl1, stateSystemManager);
+            GameMain.GameMainBegin(openGLControl1);
         }
 
         private void OpenGLControl1_ClientSizeChanged(object sender, EventArgs e)
