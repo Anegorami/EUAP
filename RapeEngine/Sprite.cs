@@ -135,8 +135,8 @@ namespace RapeEngine
 
         private void InitVertexPositions(Vector3D position, double width, double height)
         {
-            double halfWidth = Width / 2;
-            double halfHeight = Height / 2;
+            double halfWidth = width / 2;
+            double halfHeight = height / 2;
 
             //clockwise creation of two triangles to make a quad
             // TopLeft, TopRight, BottomLeft
