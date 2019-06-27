@@ -24,14 +24,14 @@ namespace RapeEngine
 
         public void DrawImmediateModeVertex(Vector3D position, Color color, Point uvs)
         {
-            gl.Color(color.R, color.G, color.B, color.A);
+            gl.Color((float)color.R, (float)color.G, (float)color.B, (float)color.A);
             gl.TexCoord(uvs.X, uvs.Y);
             gl.Vertex(position.X, position.Y, position.Z);
         }
 
         public void DrawImmediateModeVertex(Vector3D position, Color color)
         {
-            gl.Color(color.R, color.G, color.B, color.A);
+            gl.Color((float)color.R, (float)color.G, (float)color.B, (float)color.A);
             gl.Vertex(position.X, position.Y, position.Z);
         }
 
@@ -44,7 +44,7 @@ namespace RapeEngine
         public void DrawImmediateModeVertexSingle(Vector3D position, Color color, Point uvs)
         {
             gl.Begin(OpenGL.GL_TRIANGLES);
-            gl.Color(color.R, color.G, color.B, color.A);
+            gl.Color((float)color.R, (float)color.G, (float)color.B, (float)color.A);
             gl.TexCoord(uvs.X, uvs.Y);
             gl.Vertex(position.X, position.Y, position.Z);
             gl.End();
@@ -53,7 +53,7 @@ namespace RapeEngine
         public void DrawImmediateModeVertexSingle(Vector3D position, Color color)
         {
             gl.Begin(OpenGL.GL_TRIANGLES);
-            gl.Color(color.R, color.G, color.B, color.A);
+            gl.Color((float)color.R, (float)color.G, (float)color.B, (float)color.A);
             gl.Vertex(position.X, position.Y, position.Z);
             gl.End();
         }
@@ -79,15 +79,15 @@ namespace RapeEngine
 
         public void Draw(Sprite sprite)
         {
+            if (sprite.HasTexture())
+            {
+                gl.BindTexture(OpenGL.GL_TEXTURE_2D, sprite.Texture.glId);
+            }
+
             gl.Begin(OpenGL.GL_TRIANGLES);
             {
                 for(int i =0; i < Sprite.VERTEX_AMOUNT; i++)
                 {
-                    if(sprite.HasTexture())
-                    {
-                        gl.BindTexture(OpenGL.GL_TEXTURE_2D, sprite.Texture.glId);                        
-                    }
-
                     DrawImmediateModeVertex(sprite.VertexPositions[i], sprite.VertexColors[i], sprite.VertexUvs[i]);
                 }
             }
