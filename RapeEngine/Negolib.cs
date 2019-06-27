@@ -23,7 +23,7 @@ namespace RapeEngine
 		/// </summary>
 		/// <param name="value">String to convert. Must use the dot as the delimeter.</param>
 		/// <returns>Destringed Double.</returns>
-		public static double S2D(string value) {
+		public static double StringToDouble(string value) {
 			return double.Parse(value, CultureInfo.InvariantCulture);
 		}
 	}

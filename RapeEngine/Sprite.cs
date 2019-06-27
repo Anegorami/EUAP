@@ -61,7 +61,6 @@ namespace RapeEngine
 
                 // Set width and height to texture's by default.
                 InitVertexPositions(GetCenter(), texture.width, texture.height);
-                
             }
         }
 
