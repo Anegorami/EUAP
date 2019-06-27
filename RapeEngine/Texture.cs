@@ -20,5 +20,12 @@ namespace RapeEngine
             this.width = width;
             this.height = height;
         }     
+
+        internal Texture(Texture texture)
+        {
+            this.glId = texture.glId;
+            this.width = texture.width;
+            this.height = texture.height;
+        }
     }
 }
