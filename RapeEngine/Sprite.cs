@@ -109,7 +109,7 @@ namespace RapeEngine
 
         public bool HasTexture()
         {
-            return texture == null;
+            return texture != null;
         }
 
         public void SetPosition(double x, double y, double z = 0)

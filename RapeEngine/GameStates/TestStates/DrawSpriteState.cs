@@ -27,7 +27,7 @@ namespace RapeEngine.GameStates.TestStates
             testSprite1 = new Sprite();
             testSprite2 = new Sprite();
             
-            textureManager.AddTexturePathAndLoad("text1", "testImage.png");
+            textureManager.AddTexturePathAndLoad("text1", "testImage2.png");
 
             testSprite1.Texture = textureManager.GetTexture("text1");
             testSprite1.Height = (1000f);
