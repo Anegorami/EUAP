@@ -104,7 +104,7 @@ namespace RapeEngine
         public Sprite()
         {
             InitVertexPositions(new Vector3D(0, 0, 0), 1, 1);
-            Color = Color.FromArgb(1, 1, 1, 1);
+            Color = Color.FromArgb(255, 255, 255, 255);
             SetUVs(new Point(0, 0), new Point(1, 1));
         }
 

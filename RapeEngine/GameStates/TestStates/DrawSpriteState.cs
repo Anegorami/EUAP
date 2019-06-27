@@ -11,7 +11,6 @@ namespace RapeEngine.GameStates.TestStates
     internal class DrawSpriteState : IGameState
     {
         public const string STATE_ID = "DrawSpriteState";
-        private readonly OpenGL gl;
         private TextureManager textureManager;
         private Renderer renderer;
         private Sprite testSprite1;
@@ -19,14 +18,13 @@ namespace RapeEngine.GameStates.TestStates
 
         public string StateId { get { return STATE_ID; } }
 
-        internal DrawSpriteState(OpenGL openGl)
+        internal DrawSpriteState(Renderer renderer)
         {
-            gl = openGl;
-            textureManager = new TextureManager(gl);
-            renderer = new Renderer(gl);
+            textureManager = new TextureManager(renderer.getGlObject());
             testSprite1 = new Sprite();
             testSprite2 = new Sprite();
-            
+            this.renderer = renderer;
+
             textureManager.AddTexturePathAndLoad("text1", "testImage2.png");
 
             testSprite1.Texture = textureManager.GetTexture("text1");
@@ -34,8 +32,8 @@ namespace RapeEngine.GameStates.TestStates
             testSprite1.Width = (1000f);
 
             testSprite2.Texture = textureManager.GetTexture("text1");
-            testSprite2.SetPosition(-256, -256);
-            testSprite2.Color = Color.FromArgb(1, 0, 0, 1);
+            testSprite2.SetPosition(-256, -256, 1f);
+            testSprite2.Color = Color.FromArgb(255, 0, 0, 255);
         }
 
         public void Update(double elapsedTimeMs)
@@ -45,7 +43,8 @@ namespace RapeEngine.GameStates.TestStates
 
         public void Render()
         {
-            renderer.ClearScreen(Color.FromArgb(1, 0, 0, 0));
+            renderer.SetClearScreenColor(Color.FromArgb(255, 0, 0, 0));
+            renderer.ClearScreen();
             renderer.Draw(testSprite1);
             renderer.Draw(testSprite2);
             renderer.Finish();

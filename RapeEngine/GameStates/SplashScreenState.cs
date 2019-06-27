@@ -13,15 +13,15 @@ namespace RapeEngine.GameStates
         private const int TIME_SPLASH_ON_SCREEN_SECONDS = 3;
 
         private readonly StateSystemManager stateManager;
-        private readonly OpenGL gl;
+        private readonly Renderer renderer;
         private float timeLeftOnScreen = TIME_SPLASH_ON_SCREEN_SECONDS;
 
         public string StateId { get { return STATE_ID; } }
 
-        public SplashScreenState(StateSystemManager stateSystemManager, OpenGL openGL)
+        public SplashScreenState(StateSystemManager stateSystemManager, Renderer renderer)
         {
             stateManager = stateSystemManager;
-            gl = openGL;
+            this.renderer = renderer;
         }
         public void Update(double elapsedTimeMs)
         {
@@ -36,9 +36,9 @@ namespace RapeEngine.GameStates
 
         public void Render()
         {
-            gl.ClearColor(1, 1, 1, 1);
-            gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT);
-            gl.Finish();
+            renderer.SetClearScreenColor(255, 255, 255, 255);
+            renderer.ClearScreen();
+            renderer.Finish();
         }
     }
 }

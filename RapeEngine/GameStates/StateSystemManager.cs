@@ -69,7 +69,8 @@ namespace RapeEngine.GameStates
         public bool TestAddState()
         {
             OpenGL gl = new OpenGL();
-            IGameState obj = new SplashScreenState(this, gl);
+            Renderer renderer = new Renderer(gl);
+            IGameState obj = new SplashScreenState(this, renderer);
             
             AddState(obj);
 
@@ -88,8 +89,9 @@ namespace RapeEngine.GameStates
         public bool TestStateTransitions()
         {
             OpenGL gl = new OpenGL();
-            IGameState obj = new SplashScreenState(this, gl);
-            IGameState obj1 = new SplashScreenState(this, gl);
+            Renderer renderer = new Renderer(gl);
+            IGameState obj = new SplashScreenState(this, renderer);
+            IGameState obj1 = new SplashScreenState(this, renderer);
             IGameState temp;
 
             AddState(obj);

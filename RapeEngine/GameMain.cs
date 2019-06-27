@@ -21,12 +21,11 @@ namespace RapeEngine
             gl = glControl.OpenGL;
             glGUI_Element = glControl;
             gameStateManager = new StateSystemManager();
+            Renderer renderer = new Renderer(gl);
 
-            gl.ClearColor(0, 0, 0, 1);
-
-            gameStateManager.AddState(new SplashScreenState(gameStateManager, gl));
-            gameStateManager.AddState(new TitleMenuState(gameStateManager, gl));
-            gameStateManager.AddState(new GameStates.TestStates.DrawSpriteState(gl));
+            gameStateManager.AddState(new SplashScreenState(gameStateManager, renderer));
+            gameStateManager.AddState(new TitleMenuState(gameStateManager, renderer));
+            gameStateManager.AddState(new GameStates.TestStates.DrawSpriteState(renderer));
 
             gameStateManager.SetState(GameStates.TestStates.DrawSpriteState.STATE_ID);
 

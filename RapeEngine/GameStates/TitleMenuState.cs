@@ -1,50 +1,45 @@
 ﻿using SharpGL;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
 
 namespace RapeEngine.GameStates
 {
     public class TitleMenuState : IGameState
     {
         public static string STATE_ID = "TitleMenuState";
-        private readonly OpenGL gl;
+        private readonly Renderer renderer;
         private readonly StateSystemManager stateManager;
-
-        private double currentRotation = 0;
 
         public string StateId { get { return STATE_ID; } }
 
-        public TitleMenuState(StateSystemManager stateSystemManager, OpenGL openGl)
+        public TitleMenuState(StateSystemManager stateSystemManager, Renderer renderer)
         {
-            gl = openGl;
+            this.renderer = renderer;
             stateManager = stateSystemManager;
         }
         public void Update(double elapsedTimeMs)
         {
-            currentRotation = elapsedTimeMs / 1000f;
+            
         }
 
         public void Render()
         {
-            gl.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-            gl.Clear(OpenGL.GL_COLOR_BUFFER_BIT | OpenGL.GL_DEPTH_BUFFER_BIT);
+            renderer.SetClearScreenColor(0, 0, 0, 255);
+            renderer.ClearScreen();
 
-            gl.PointSize(5.0f);
-            gl.Rotate(currentRotation, 0, 1, 0);
-            gl.Begin(OpenGL.GL_TRIANGLES);
+            renderer.BeginVertexDraw();
             {
-                gl.Color(1.0, 0.0, 0.0, 0.5);
-                gl.Vertex(-50f, 0, 0f);
-                gl.Color(0.0, 1.0, 0.0);
-                gl.Vertex(50f, 0, 0f);
-                gl.Color(0.0, 0.0, 1.0);
-                gl.Vertex(0, 50f, 0f);
+                renderer.DrawImmediateModeVertex(new Vector3D(-50f, 0f, 0f), Color.FromArgb(0, 0, 255, 0));
+                renderer.DrawImmediateModeVertex(new Vector3D(50f, 0f, 0f), Color.FromArgb(0, 255, 0, 0));
+                renderer.DrawImmediateModeVertex(new Vector3D(50f, 50f, 0f), Color.FromArgb(0, 0, 0, 255));
             }
-            gl.End();
-            gl.Finish();
+            renderer.EndVertexDraw();
+            renderer.Finish();
         }
     }
 }
