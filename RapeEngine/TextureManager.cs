@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,11 @@ namespace RapeEngine
 
         public void AddTexturePath(string textureId, string texturePath)
         {
+            if(!File.Exists(texturePath))
+            {
+                throw new Exception("AddTexturePath: path invalid: " + texturePath);
+            }
+
             texturePathTracker.Add(textureId, texturePath);
         }
 
@@ -134,7 +140,7 @@ namespace RapeEngine
             }
             catch(Exception e)
             {
-                throw new Exception("Load texture into memory failed, textureId didn't exist. Make sure it's spelled correctly and that addTexturePath was called first", e);
+                throw new Exception("Load texture into memory failed, textureId didn't exist. Make sure it's spelled correctly and that addTexturePath was called first. TextureId: " + textureId, e);
             }
         }
 
@@ -150,7 +156,7 @@ namespace RapeEngine
             }
             catch(Exception e)
             {
-                throw new Exception("Remove texture into memory failed, textureId didn't exist. Make sure it's spelled correctly and that this texture was loaded into memory before calling remove", e);
+                throw new Exception("Remove texture into memory failed, textureId didn't exist. Make sure it's spelled correctly and that this texture was loaded into memory before calling remove. TextureId: " + textureId, e);
             }
         }
 
