@@ -58,6 +58,8 @@ namespace RapeEngine
             set
             {
                 texture = value;
+
+                // Set width and height to texture's by default.
                 InitVertexPositions(GetCenter(), texture.width, texture.height);
                 
             }
@@ -103,7 +105,7 @@ namespace RapeEngine
         public Sprite()
         {
             InitVertexPositions(new Vector3D(0, 0, 0), 1, 1);
-            Color = Color.FromArgb(0, 1, 1, 1);
+            Color = Color.FromArgb(1, 1, 1, 1);
             SetUVs(new Point(0, 0), new Point(1, 1));
         }
 
