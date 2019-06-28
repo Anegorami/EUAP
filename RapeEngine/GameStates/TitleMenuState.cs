@@ -34,9 +34,9 @@ namespace RapeEngine.GameStates
 
             renderer.BeginVertexDraw();
             {
-                renderer.DrawImmediateModeVertex(new Vector3D(-50f, 0f, 0f), Color.FromArgb(0, 0, 255, 0));
-                renderer.DrawImmediateModeVertex(new Vector3D(50f, 0f, 0f), Color.FromArgb(0, 255, 0, 0));
-                renderer.DrawImmediateModeVertex(new Vector3D(50f, 50f, 0f), Color.FromArgb(0, 0, 0, 255));
+                renderer.DrawImmediateModeVertex(new Vector3D(-50f, 0f, -1f), Color.FromArgb(255, 0, 255, 0));
+                renderer.DrawImmediateModeVertex(new Vector3D(50f, 0f, -1f), Color.FromArgb(255, 255, 0, 0));
+                renderer.DrawImmediateModeVertex(new Vector3D(50f, 50f, -1f), Color.FromArgb(255, 0, 0, 255));
             }
             renderer.EndVertexDraw();
             renderer.Finish();

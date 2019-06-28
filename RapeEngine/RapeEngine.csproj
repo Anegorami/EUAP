@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AudioVisual\Audio.cs" />
+    <Compile Include="Utilities\FormRendererPlugin.cs" />
     <Compile Include="GameLoopExecutor.cs" />
     <Compile Include="GameMain.cs" />
     <Compile Include="GameStates\IGameState.cs" />

@@ -48,7 +48,6 @@ namespace RapeEngine
             this.openGLControl1.RenderTrigger = SharpGL.RenderTrigger.Manual;
             this.openGLControl1.Size = new System.Drawing.Size(1280, 720);
             this.openGLControl1.TabIndex = 0;
-            this.openGLControl1.ClientSizeChanged += new System.EventHandler(this.OpenGLControl1_ClientSizeChanged);
             // 
             // MainForm
             // 

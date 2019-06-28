@@ -16,12 +16,17 @@ namespace RapeEngine
         static private OpenGLControl glGUI_Element;
         static private StateSystemManager gameStateManager;
 
-        static public void GameMainBegin(OpenGLControl glControl)
+        static public void GameMainBegin(OpenGLControl glControl, Renderer renderer = null)
         {
             gl = glControl.OpenGL;
             glGUI_Element = glControl;
+
+            if(null == renderer)
+            {
+                renderer = new Renderer(gl);
+            }
+
             gameStateManager = new StateSystemManager();
-            Renderer renderer = new Renderer(gl);
 
             gameStateManager.AddState(new SplashScreenState(gameStateManager, renderer));
             gameStateManager.AddState(new TitleMenuState(gameStateManager, renderer));
