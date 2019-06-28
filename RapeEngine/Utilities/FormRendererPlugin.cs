@@ -8,18 +8,26 @@ using System.Windows.Forms;
 
 namespace RapeEngine
 {
-    static class FormRendererPlugin
+    /// <summary>
+    /// Logic for interfacing the game's renderer with the game's window form. 
+    /// </summary>
+    /// Decided not to make it static as users really shouldn't be able to forget init'ing it.
+    public class FormRendererPlugin
     {
         private static OpenGL gl;
         private static Renderer renderer;
 
-        public static void Init(Renderer renderer)
+        /// <summary>
+        /// Initializes
+        /// </summary>
+        /// <param name="renderer"></param>
+        public FormRendererPlugin(Renderer renderer)
         {
             FormRendererPlugin.renderer = renderer;
             gl = renderer.getGlObject();
         }
 
-        public static void WindowSizeChangedEventPlugin(object sender, EventArgs e)
+        public void WindowSizeChangedEventPlugin(object sender, EventArgs e)
         {
             Form form = (Form)sender;
 
