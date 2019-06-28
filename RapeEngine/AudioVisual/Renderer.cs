@@ -52,19 +52,7 @@ namespace RapeEngine
 
         internal static double AspectRatio { get; set; }
 
-
-        public Renderer(OpenGL openGl)
-        {
-            AspectRatio = 1f;
-            maintainAspectRatio = false;
-
-            gl = openGl;
-            gl.Enable(OpenGL.GL_TEXTURE_2D);
-            gl.Enable(OpenGL.GL_BLEND);
-            gl.BlendFunc(OpenGL.GL_SRC_ALPHA, OpenGL.GL_ONE_MINUS_SRC_ALPHA);
-        }
-
-        public Renderer(OpenGL openGl, bool maintainAspectRatio)
+        public Renderer(OpenGL openGl, int setViewportWidth, int setViewportHeight, bool maintainAspectRatio = true)
         {
             if (maintainAspectRatio)
             {
@@ -81,6 +69,34 @@ namespace RapeEngine
             gl.Enable(OpenGL.GL_TEXTURE_2D);
             gl.Enable(OpenGL.GL_BLEND);
             gl.BlendFunc(OpenGL.GL_SRC_ALPHA, OpenGL.GL_ONE_MINUS_SRC_ALPHA);
+
+            gl.Viewport(0, 0, setViewportWidth, setViewportHeight);
+
+            Setup2DGraphics((float)setViewportWidth / (float)setViewportHeight);
+        }
+
+        public Renderer(OpenGL openGl, bool maintainAspectRatio = true)
+        {
+            if (maintainAspectRatio)
+            {
+                AspectRatio = DEFAULT_ASPECT_RATIO;
+            }
+            else
+            {
+                AspectRatio = 1;
+            }
+
+            this.maintainAspectRatio = maintainAspectRatio;
+
+            gl = openGl;
+            gl.Enable(OpenGL.GL_TEXTURE_2D);
+            gl.Enable(OpenGL.GL_BLEND);
+            gl.BlendFunc(OpenGL.GL_SRC_ALPHA, OpenGL.GL_ONE_MINUS_SRC_ALPHA);
+
+            int[] viewportData = new int[4];
+            gl.GetInteger(OpenGL.GL_VIEWPORT, viewportData);
+
+            Setup2DGraphics((float)viewportData[2] / (float)viewportData[3]);
         }
 
         public void Setup2DGraphics(double newAspectRatio)
