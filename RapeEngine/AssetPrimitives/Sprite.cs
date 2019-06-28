@@ -123,6 +123,11 @@ namespace RapeEngine
             InitVertexPositions(position, Width, Height);
         }
 
+        public Vector3D GetPosition()
+        {
+            return GetCenter();
+        }
+
         public void SetUVs(Point topLeft, Point bottomRight)
         {
             vertexUVs[0] = topLeft;
