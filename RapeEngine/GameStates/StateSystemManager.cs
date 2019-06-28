@@ -8,12 +8,20 @@ using System.Threading.Tasks;
 
 namespace RapeEngine.GameStates
 {
+    /// <summary>
+    /// Class for managing the game's global set of states, and the main interface for interacting 
+    /// with game state logic. 
+    /// </summary>
     public class StateSystemManager
     {
         private Dictionary<String, IGameState> stateStore = new Dictionary<string, IGameState>();
         private IGameState currentState = null;
         private IGameState previousState = null;
 
+        /// <summary>
+        /// Tells the current game state to run its update sequence.
+        /// </summary>
+        /// <param name="elapsedTimeMs">Amount of time that has passed since the last update cycle in milliseconds</param>
         public void Update(double elapsedTimeMs)
         {
             if(currentState != null)
@@ -22,6 +30,9 @@ namespace RapeEngine.GameStates
             }
         }
 
+        /// <summary>
+        /// Tells the current game state to run its render sequence.
+        /// </summary>
         public void Render()
         {
             if (currentState != null)
@@ -30,11 +41,20 @@ namespace RapeEngine.GameStates
             }
         }
 
+        /// <summary>
+        /// Checks whether or a game state exists in the manager.
+        /// </summary>
+        /// <param name="stateId">the id of the state</param>
+        /// <returns></returns>
         public bool Exists(string stateId)
         {
             return stateStore.ContainsKey(stateId);
         }
 
+        /// <summary>
+        /// Adds a state to the manager.
+        /// </summary>
+        /// <param name="state"></param>
         public void AddState(IGameState state)
         {
             if(!stateStore.ContainsKey(state.StateId))
@@ -43,6 +63,12 @@ namespace RapeEngine.GameStates
             }
         }
 
+        /// <summary>
+        /// Sets a state to be the current main running state.
+        /// 
+        /// Will throw an Exception if the state referenced by stateId doesn't exist
+        /// </summary>
+        /// <param name="stateId"></param>
         public void SetState(string stateId)
         {
             //I'll let this throw an exception if they try and change state with a wrong ID.
@@ -54,6 +80,11 @@ namespace RapeEngine.GameStates
             previousState = temp;
         }
 
+        /// <summary>
+        /// Reverts state manager to its last known state before the most recent Set was called. 
+        /// Only works one at a time, IE it only remembers the state right before the last setState call. Can't
+        /// be called twice without calling setState again, does nothing otherwise. 
+        /// </summary>
         public void RevertSetState()
         {
             //can't be done twice in a row
