@@ -5,23 +5,98 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Media.Media3D;
 
 namespace RapeEngine
 {
+    public delegate void RendererAspectChangedEvent();
+
     public class Renderer
     {
-        private const float COLOR_MAX_VALUE_INT = 255;
+        private const double DEFAULT_VIRTUAL_HEIGHT = 1000;
+        private const double DEFAULT_VIRTUAL_WIDTH = 1000;
 
+        private const float COLOR_MAX_VALUE_INT = 255;
+        private const double DEFAULT_ASPECT_RATIO = 1280f / 720f;
+
+        private bool maintainAspectRatio;
         private readonly OpenGL gl;
         private Color clearColor;
 
+        public event RendererAspectChangedEvent VirtualHeightMaxChanged;
+        public event RendererAspectChangedEvent VirtualWidthMaxChanged;
+
+        public double VirtualHeightMax
+        {
+            get
+            {
+                return DEFAULT_VIRTUAL_HEIGHT;
+            }
+        }
+
+        public double VirtualWidthMax
+        {
+            get
+            {
+                if (maintainAspectRatio)
+                {
+                    return VirtualHeightMax * AspectRatio;
+                }
+                else
+                {
+                    return VirtualHeightMax;
+                }
+            }
+        }
+
+        internal static double AspectRatio { get; set; }
+
+
         public Renderer(OpenGL openGl)
         {
+            AspectRatio = 1f;
+            maintainAspectRatio = false;
+
             gl = openGl;
             gl.Enable(OpenGL.GL_TEXTURE_2D);
             gl.Enable(OpenGL.GL_BLEND);
             gl.BlendFunc(OpenGL.GL_SRC_ALPHA, OpenGL.GL_ONE_MINUS_SRC_ALPHA);
+        }
+
+        public Renderer(OpenGL openGl, bool maintainAspectRatio)
+        {
+            if (maintainAspectRatio)
+            {
+                AspectRatio = DEFAULT_ASPECT_RATIO;
+            }
+            else
+            {
+                AspectRatio = 1;
+            }
+
+            this.maintainAspectRatio = maintainAspectRatio;
+
+            gl = openGl;
+            gl.Enable(OpenGL.GL_TEXTURE_2D);
+            gl.Enable(OpenGL.GL_BLEND);
+            gl.BlendFunc(OpenGL.GL_SRC_ALPHA, OpenGL.GL_ONE_MINUS_SRC_ALPHA);
+        }
+
+        public void Setup2DGraphics(double newAspectRatio)
+        {
+            if (maintainAspectRatio)
+            {
+                AspectRatio = newAspectRatio;
+
+                VirtualWidthMaxChanged?.Invoke();
+            }
+
+            gl.MatrixMode(OpenGL.GL_PROJECTION);
+            gl.LoadIdentity();
+            gl.Ortho(-VirtualWidthMax / 2f, VirtualWidthMax / 2f, -VirtualHeightMax / 2f, VirtualHeightMax / 2f, -100, 100);
+            gl.MatrixMode(OpenGL.GL_MODELVIEW);
+            gl.LoadIdentity();
         }
 
         internal OpenGL getGlObject()
@@ -140,5 +215,30 @@ namespace RapeEngine
             }
             gl.End();
         }
+
+        public void DrawBackground(Sprite sprite)
+        {
+            double oldWidth = sprite.Width;
+            double oldHeight = sprite.Height;
+            Vector3D oldPosition = sprite.GetPosition();
+
+            sprite.Width = VirtualWidthMax;
+            sprite.Height = VirtualHeightMax;
+            sprite.SetPosition(0, 0);
+
+            ClearScreen();
+            gl.Disable(OpenGL.GL_DEPTH_TEST);
+
+            Draw(sprite);
+
+            gl.Clear(OpenGL.GL_DEPTH_BUFFER_BIT);
+            gl.Enable(OpenGL.GL_DEPTH_TEST);
+
+            sprite.Width = oldWidth;
+            sprite.Height = oldHeight;
+            sprite.SetPosition(oldPosition);
+        }
     }
+
+
 }
