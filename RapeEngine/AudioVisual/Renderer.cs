@@ -54,14 +54,7 @@ namespace RapeEngine
 
         public Renderer(OpenGL openGl, int setViewportWidth, int setViewportHeight, bool maintainAspectRatio = true)
         {
-            if (maintainAspectRatio)
-            {
-                AspectRatio = DEFAULT_ASPECT_RATIO;
-            }
-            else
-            {
-                AspectRatio = 1;
-            }
+            AspectRatio = 1;
 
             this.maintainAspectRatio = maintainAspectRatio;
 
@@ -77,14 +70,8 @@ namespace RapeEngine
 
         public Renderer(OpenGL openGl, bool maintainAspectRatio = true)
         {
-            if (maintainAspectRatio)
-            {
-                AspectRatio = DEFAULT_ASPECT_RATIO;
-            }
-            else
-            {
-                AspectRatio = 1;
-            }
+
+            AspectRatio = 1;
 
             this.maintainAspectRatio = maintainAspectRatio;
 

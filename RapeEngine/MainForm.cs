@@ -36,6 +36,7 @@ namespace RapeEngine
                 FormBorderStyle = FormBorderStyle.FixedSingle;
             }
 
+            // Plugs renderer into the main window so it can update properly before starting the game.
             Renderer renderer = new Renderer(openGLControl1.OpenGL, ClientSize.Width, ClientSize.Height, false);
             rendererPlugin = new FormRendererPlugin(renderer);
             this.SizeChanged += rendererPlugin.WindowSizeChangedEventPlugin;

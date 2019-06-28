@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace RapeEngine.GameStates.TestStates
 {
+    /// <summary>
+    /// Test state for messing around with drawing sprites.
+    /// </summary>
     internal class DrawSpriteState : IGameState
     {
         public const string STATE_ID = "DrawSpriteState";
@@ -28,14 +31,12 @@ namespace RapeEngine.GameStates.TestStates
             gl = renderer.getGlObject();
 
             textureManager.AddTexturePathAndLoad("text1", "exampleBackground.bmp");
-            textureManager.AddTexturePathAndLoad("text2", "testImage2.png");
+            textureManager.AddTexturePathAndLoad("text2", "alice1.png");
             testSprite1.Texture = textureManager.GetTexture("text1");
-            testSprite1.SetPosition(100, 100);
-            testSprite1.Height = 100;
-            testSprite1.Width = 100;
 
             testSprite2.Texture = textureManager.GetTexture("text2");
-            testSprite2.SetPosition(0, 0, 1f);
+
+
             renderer.SetClearScreenColor(Color.FromArgb(255, 0, 0, 0));
 
         }

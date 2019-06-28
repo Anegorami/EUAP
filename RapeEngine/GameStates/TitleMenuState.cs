@@ -9,14 +9,22 @@ using System.Windows.Media.Media3D;
 
 namespace RapeEngine.GameStates
 {
+    /// <summary>
+    /// State for managing, displaying and executing the game's title menu.
+    /// </summary>
     public class TitleMenuState : IGameState
     {
-        public static string STATE_ID = "TitleMenuState";
+        public const string STATE_ID = "TitleMenuState";
         private readonly Renderer renderer;
         private readonly StateSystemManager stateManager;
 
         public string StateId { get { return STATE_ID; } }
 
+        /// <summary>
+        /// Standard constructor, initializes internal variables and waits for update cycle to begin.
+        /// </summary>
+        /// <param name="stateSystemManager">The global state system manager.</param>
+        /// <param name="renderer">The system renderer.</param>
         public TitleMenuState(StateSystemManager stateSystemManager, Renderer renderer)
         {
             this.renderer = renderer;

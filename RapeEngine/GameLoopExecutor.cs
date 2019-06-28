@@ -9,13 +9,26 @@ using System.Windows.Forms;
 
 namespace RapeEngine
 {
+    /// <summary>
+    /// Class for managing executing the global game loop. Interfacing a game loop with 
+    /// an event-driven form needs some processing on its own, encapsulated into here. Calls game loop whenever the application is idle.
+    /// Primarily used by just passing the game loop to it as a callback and letting it do its
+    /// thing.
+    /// </summary>
     public class GameLoopExecutor
     {
+        // Variables for calling back the gameloop 
         public delegate void LoopCallback(double elapsedTimeMs);
-        private Stopwatch stopWatch;
         private readonly LoopCallback callback;
+
+        //Variables for tracking loop timing.
+        private Stopwatch stopWatch;
         private long previousTime;
 
+        /// <summary>
+        /// Standard constructor. Takes in the game loop as a callback and starts calling it whenever it can.
+        /// </summary>
+        /// <param name="loopCallback"></param>
         public GameLoopExecutor(LoopCallback loopCallback)
         {
             callback = loopCallback;
@@ -25,6 +38,12 @@ namespace RapeEngine
             Application.Idle += new EventHandler(OnApplicationEnterIdle);
         }
 
+        /// <summary>
+        /// Event handler for application entering idle, this is where the game loop actually gets called. 
+        /// Monitors the app state and continues to loop when the app is idle.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnApplicationEnterIdle(object sender, EventArgs e)
         {
             long currentTime;
@@ -39,6 +58,11 @@ namespace RapeEngine
             }
         }
 
+        /// <summary>
+        /// Returns whether or not the app is still idle. Uses the interop PeekMessage function from User32.dll 
+        /// to find out -- window is idle when windows is giving it no further messages.
+        /// </summary>
+        /// <returns></returns>
         private bool IsAppStillIdle()
         {
             InteropMessage msg;
