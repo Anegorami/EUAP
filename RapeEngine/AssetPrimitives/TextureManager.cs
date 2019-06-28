@@ -50,9 +50,6 @@ namespace RapeEngine
                     return false;
                 }
 
-                // gl expects the images to come upside down compared to normal format
-                image.RotateFlip(RotateFlipType.RotateNoneFlipY);
-
                 // Tell gl that we're adding a new texture to it
                 uint[] textureIdArray = new uint[1];
 
