@@ -23,7 +23,7 @@ namespace RapeEngine {
 		/// <param name="sender">Delegate parameter. Required, but not used.</param>
 		/// <param name="args">Delegate parameter. Required, but not used.</param>
 		void Step(object sender, EventArgs args) {
-			Audio.Update(0.1);
+			Audio.Update(update_timer.Interval);
 		}
 		
 		/// <summary>

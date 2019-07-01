@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Tags;
 
@@ -31,18 +32,14 @@ namespace RapeEngine {
 			/// <summary>
 			/// Constructor.
 			/// </summary>
-			/// <param name="filename">Filename.</param>
+			/// <param name="filename">File to load.</param>
 			public LoopedSample(string filename) {
-				// Sample loading.
-				// First 0 is the starting point.
-				// Second 0 is the length (meaning the whole file).
-				// The 1 is the maximum channels playing the same sample simulteniously.
-				// For looped samples, 1 is a good choice.
-				Sample = Bass.BASS_SampleLoad(filename, 0, 0, 1, BASSFlag.BASS_DEFAULT);
+				Sample = LoadSample(filename);
 				
 				// Extracting loop timepoints from the tags.
 				TAG_INFO tag = BassTags.BASS_TAG_GetFromFile(filename);
 				string test = tag.NativeTag("loop_start");
+				
 				if (test != null) {
 					LoopStart = Negolib.StringToDouble(test);
 					LoopEnd = Negolib.StringToDouble(tag.NativeTag("loop_end"));
@@ -52,6 +49,31 @@ namespace RapeEngine {
 				}
 			}
 		}
+		
+		/// <summary>
+		/// BGM directory.
+		/// </summary>
+		const string DIR_BGM = "bgm";
+		
+		/// <summary>
+		/// BGS directory.
+		/// </summary>
+		const string DIR_BGS = "bgs";
+		
+		/// <summary>
+		/// ME directory.
+		/// </summary>
+		const string DIR_ME = "me";
+		
+		/// <summary>
+		/// SE directory.
+		/// </summary>
+		const string DIR_SE = "se";
+		
+		/// <summary>
+		/// VO directory.
+		/// </summary>
+		const string DIR_VO = "vo";
 		
 		/// <summary>
 		/// Dictionary for storing the loaded BGM samples.
@@ -164,7 +186,7 @@ namespace RapeEngine {
 		static double vo_over_bgm_modifier = 0.2;
 		
 		/// <summary>
-		/// Flag to restore the BGM volume after VO finished playing.
+		/// Flag to restore the BGM volume after the VO finished playing.
 		/// </summary>
 		static bool check_for_vo_end;
 		
@@ -355,6 +377,19 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
+		/// Shortcut for BASS_SampleLoad.
+		/// </summary>
+		/// <param name="filename">File to load.</param>
+		/// <param name="channels_max">How much samples can play simulteniously.</param>
+		/// <returns>Sample handle.</returns>
+		static int LoadSample(string filename, int channels_max = 1) {
+			// Sample loading.
+			// First 0 is the starting point.
+			// Second 0 is the length (meaning the whole file).
+			return Bass.BASS_SampleLoad(filename, 0, 0, channels_max, BASSFlag.BASS_DEFAULT);
+		}
+		
+		/// <summary>
 		/// A method to check if the channel is playing.
 		/// </summary>
 		/// <param name="channel">Channel to check.</param>
@@ -371,6 +406,7 @@ namespace RapeEngine {
 		static void Looping(LoopedSample current, int channel) {
 			long current_position_bytes = Bass.BASS_ChannelGetPosition(channel);
 			double current_position = Bass.BASS_ChannelBytes2Seconds(channel, current_position_bytes);
+			
 			if (current_position > current.LoopEnd) {
 				double new_position = current.LoopStart + (current_position - current.LoopEnd);
 				Bass.BASS_ChannelSetPosition(channel, new_position);
@@ -465,7 +501,7 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
-		/// A method to enable auto looping (i.e. loop the whole sample).
+		/// Method to enable auto looping (i.e. loop the whole sample).
 		/// </summary>
 		/// <param name="channel">Channel to enable the looping on.</param>
 		static void ActivateAutoLooping(int channel) {
@@ -473,7 +509,22 @@ namespace RapeEngine {
 		}
 		
 		/// <summary>
-		/// Initialization function.
+		/// Method to show the "File not found!" error.
+		/// </summary>
+		/// <param name="key">Missing key.</param>
+		/// <param name="item">Type of the item ("BGM", "BGS", ...).</param>
+		/// <param name="directory">Directory where the item must be stored.</param>
+		static void KeyError(string key, string item, string directory) {
+			key += ".ogg";
+			
+			string message = "{0} with filename \"{1}\" wasn't found!\n";
+			message += "Make sure that the file is present in the \"{2}\" folder!";
+			message = String.Format(message, item, key, directory);
+			MessageBox.Show(message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+		
+		/// <summary>
+		/// Initialization method.
 		/// </summary>
 		/// <param name="handle">Main window handle. Required for the BASS library initialization.</param>
 		public static void Init(IntPtr handle) {
@@ -484,48 +535,57 @@ namespace RapeEngine {
 			Bass.BASS_Init(-1, 48000, BASSInit.BASS_DEVICE_DEFAULT, handle);
 			
 			// BGM folder scanning.
-			foreach (string filename in Directory.GetFiles("bgm")) {
-				bgm[Negolib.MakeKey(filename)] = new LoopedSample(filename);
+			try {
+				foreach (string filename in Directory.GetFiles(DIR_BGM)) {
+					bgm[Negolib.MakeKey(filename)] = new LoopedSample(filename);
+				}
+			} catch (DirectoryNotFoundException) {
+				Directory.CreateDirectory(DIR_BGM);
 			}
 			
 			// BGS folder scanning.
-			foreach (string filename in Directory.GetFiles("bgs")) {
-				bgs[Negolib.MakeKey(filename)] = new LoopedSample(filename);
+			try {
+				foreach (string filename in Directory.GetFiles(DIR_BGS)) {
+					bgs[Negolib.MakeKey(filename)] = new LoopedSample(filename);
+				}
+			} catch (DirectoryNotFoundException) {
+				Directory.CreateDirectory(DIR_BGS);
 			}
 			
 			// ME folder scanning.
-			foreach (string filename in Directory.GetFiles("me")) {
-				// Sample loading.
-				// First 0 is the starting point.
-				// Second 0 is the length (meaning the whole file).
-				// 1 is an amount af channels that can play the same sample simulteniously.
-				me[Negolib.MakeKey(filename)] = Bass.BASS_SampleLoad(filename, 0, 0, 1, BASSFlag.BASS_DEFAULT);
+			try {
+				foreach (string filename in Directory.GetFiles(DIR_ME)) {
+					me[Negolib.MakeKey(filename)] = LoadSample(filename);
+				}
+			} catch (DirectoryNotFoundException) {
+				Directory.CreateDirectory(DIR_ME);
 			}
 			
 			// SE folder scanning.
-			foreach (string filename in Directory.GetFiles("se")) {
-				// Sample loading.
-				// First 0 is the starting point.
-				// Second 0 is the length (meaning the whole file).
-				// 10 is an amount af channels that can play the same sample simulteniously.
-				se[Negolib.MakeKey(filename)] = Bass.BASS_SampleLoad(filename, 0, 0, 10, BASSFlag.BASS_DEFAULT);
+			try {
+				foreach (string filename in Directory.GetFiles(DIR_SE)) {
+					// 10 maximum channels for the SE playing should be enough.
+					se[Negolib.MakeKey(filename)] = LoadSample(filename, 10);
+				}
+			} catch (DirectoryNotFoundException) {
+				Directory.CreateDirectory(DIR_SE);
 			}
 			
 			// VO folder scanning.
-			foreach (string filename in Directory.GetFiles("vo")) {
-				// Sample loading.
-				// First 0 is the starting point.
-				// Second 0 is the length (meaning the whole file).
-				// 1 is an amount af channels that can play the same sample simulteniously.
-				vo[Negolib.MakeKey(filename)] = Bass.BASS_SampleLoad(filename, 0, 0, 1, BASSFlag.BASS_DEFAULT);
+			try {
+				foreach (string filename in Directory.GetFiles(DIR_VO)) {
+					vo[Negolib.MakeKey(filename)] = LoadSample(filename);
+				}
+			} catch (DirectoryNotFoundException) {
+				Directory.CreateDirectory(DIR_VO);
 			}
 		}
 		
 		/// <summary>
 		/// An update method. Should be bound to Graphic.OnUpdate event.
 		/// </summary>
-		/// <param name="dt">Time taken to draw the current frame.</param>
-		public static void Update(double dt) {
+		/// <param name="dt">Time taken to draw the current frame (in milliseconds).</param>
+		public static void Update(int dt) {
 			Looping(bgm_current, bgm_channel);
 			Looping(bgs_current, bgs_channel);
 			
@@ -535,7 +595,7 @@ namespace RapeEngine {
 			}
 			
 			if (OnUpdate != null) {
-				OnUpdate(dt);
+				OnUpdate((double) dt / 1000);
 			}
 		}
 		
@@ -544,22 +604,27 @@ namespace RapeEngine {
 		/// </summary>
 		/// <param name="bgmname">Filename without the extension.</param>
 		public static void PlayBGM(string bgmname) {
-			// Stops any current BGM and frees the channel.
-			Bass.BASS_ChannelStop(bgm_channel);
-			
-			// ME cleanup.
-			Bass.BASS_ChannelStop(me_channel);
-			OnUpdate -= BGMFadeOut;
-			OnUpdate -= BGMFadeIn;
-			
-			bgm_current = bgm[bgmname];
-			bgm_channel = Bass.BASS_SampleGetChannel(bgm_current.Sample, false);
-			
-			Bass.BASS_ChannelPlay(bgm_channel, false);
-			SetVolume(bgm_channel, real_volume_bgm);
-			
-			if (Math.Abs(bgm_current.LoopStart + 1) < Double.Epsilon) {
-				ActivateAutoLooping(bgm_channel);
+			try {
+				bgm_current = bgm[bgmname];
+			} catch (KeyNotFoundException) {
+				KeyError(bgmname, "BGM", DIR_BGM);
+			} finally {
+				// Stops any current BGM and frees the channel.
+				Bass.BASS_ChannelStop(bgm_channel);
+				
+				// ME cleanup.
+				Bass.BASS_ChannelStop(me_channel);
+				OnUpdate -= BGMFadeOut;
+				OnUpdate -= BGMFadeIn;
+				
+				bgm_channel = Bass.BASS_SampleGetChannel(bgm_current.Sample, false);
+				
+				Bass.BASS_ChannelPlay(bgm_channel, false);
+				SetVolume(bgm_channel, real_volume_bgm);
+				
+				if (Math.Abs(bgm_current.LoopStart + 1) < Double.Epsilon) {
+					ActivateAutoLooping(bgm_channel);
+				}
 			}
 		}
 		
@@ -578,22 +643,27 @@ namespace RapeEngine {
 		/// </summary>
 		/// <param name="bgsname">Filename without the extension.</param>
 		public static void PlayBGS(string bgsname) {
-			// Stops any current BGS and frees the channel.
-			Bass.BASS_ChannelStop(bgs_channel);
-			
-			// ME cleanup.
-			Bass.BASS_ChannelStop(me_channel);
-			OnUpdate -= BGSFadeOut;
-			OnUpdate -= BGSFadeIn;
-			
-			bgs_current = bgs[bgsname];
-			bgs_channel = Bass.BASS_SampleGetChannel(bgs_current.Sample, false);
-			
-			Bass.BASS_ChannelPlay(bgs_channel, false);
-			SetVolume(bgs_channel, real_volume_bgs);
-			
-			if (Math.Abs(bgs_current.LoopStart + 1) < Double.Epsilon) {
-				ActivateAutoLooping(bgs_channel);
+			try {
+				bgs_current = bgs[bgsname];
+			} catch (KeyNotFoundException) {
+				KeyError(bgsname, "BGS", DIR_BGS);
+			} finally {
+				// Stops any current BGS and frees the channel.
+				Bass.BASS_ChannelStop(bgs_channel);
+				
+				// ME cleanup.
+				Bass.BASS_ChannelStop(me_channel);
+				OnUpdate -= BGSFadeOut;
+				OnUpdate -= BGSFadeIn;
+				
+				bgs_channel = Bass.BASS_SampleGetChannel(bgs_current.Sample, false);
+				
+				Bass.BASS_ChannelPlay(bgs_channel, false);
+				SetVolume(bgs_channel, real_volume_bgs);
+				
+				if (Math.Abs(bgs_current.LoopStart + 1) < Double.Epsilon) {
+					ActivateAutoLooping(bgs_channel);
+				}
 			}
 		}
 		
@@ -613,27 +683,34 @@ namespace RapeEngine {
 		/// <param name="mename">Filename without the extension.</param>
 		/// <param name="time">Time of the BGM and BGS fadein (in seconds).</param>
 		public static void PlayME(string mename, double time = 3) {
-			if (IsBGMPlaying) {
-				Bass.BASS_ChannelPause(bgm_channel);
-				SetVolume(bgm_channel, 0);
-				bgm_fade_timer = time;
-				bgm_fade_timer_max = time;
-				OnUpdate += BGMFadeIn;
+			int handle = -1;
+			try {
+				handle = me[mename];
+			} catch (KeyNotFoundException) {
+				KeyError(mename, "ME", DIR_ME);
+			} finally {
+				if (IsBGMPlaying) {
+					Bass.BASS_ChannelPause(bgm_channel);
+					SetVolume(bgm_channel, 0);
+					bgm_fade_timer = time;
+					bgm_fade_timer_max = time;
+					OnUpdate += BGMFadeIn;
+				}
+				
+				if (IsBGSPlaying) {
+					Bass.BASS_ChannelPause(bgs_channel);
+					SetVolume(bgs_channel, 0);
+					bgs_fade_timer = time;
+					bgs_fade_timer_max = time;
+					OnUpdate += BGSFadeIn;
+				}
+				
+				Bass.BASS_ChannelStop(vo_channel);
+				
+				me_channel = Bass.BASS_SampleGetChannel(handle, false);
+				Bass.BASS_ChannelPlay(me_channel, false);
+				SetVolume(me_channel, real_volume_me);
 			}
-			
-			if (IsBGSPlaying) {
-				Bass.BASS_ChannelPause(bgs_channel);
-				SetVolume(bgs_channel, 0);
-				bgs_fade_timer = time;
-				bgs_fade_timer_max = time;
-				OnUpdate += BGSFadeIn;
-			}
-			
-			Bass.BASS_ChannelStop(vo_channel);
-			
-			me_channel = Bass.BASS_SampleGetChannel(me[mename], false);
-			Bass.BASS_ChannelPlay(me_channel, false);
-			SetVolume(me_channel, real_volume_me);
 		}
 		
 		/// <summary>
@@ -641,9 +718,16 @@ namespace RapeEngine {
 		/// </summary>
 		/// <param name="sename">Filename without the extension.</param>
 		public static void PlaySE(string sename) {
-			int channel = Bass.BASS_SampleGetChannel(se[sename], false);
-			Bass.BASS_ChannelPlay(channel, false);
-			SetVolume(channel, real_volume_se);
+			int handle = -1;
+			try {
+				handle = se[sename];
+			} catch (KeyNotFoundException) {
+				KeyError(sename, "SE", DIR_SE);
+			} finally {
+				int channel = Bass.BASS_SampleGetChannel(handle, false);
+				Bass.BASS_ChannelPlay(channel, false);
+				SetVolume(channel, real_volume_se);
+			}
 		}
 		
 		/// <summary>
@@ -651,16 +735,23 @@ namespace RapeEngine {
 		/// </summary>
 		/// <param name="voname">Filename without the extension.</param>
 		public static void PlayVO(string voname) {
-			// Stops any current VO and frees the channel.
-			Bass.BASS_ChannelStop(vo_channel);
-			
-			vo_channel = Bass.BASS_SampleGetChannel(vo[voname], false);
-			
-			Bass.BASS_ChannelPlay(vo_channel, false);
-			SetVolume(vo_channel, real_volume_vo);
-			
-			SetVolume(bgm_channel, real_volume_bgm);
-			check_for_vo_end = true;
+			int handle = -1;
+			try {
+				handle = vo[voname];
+			} catch (KeyNotFoundException) {
+				KeyError(voname, "VO", DIR_VO);
+			} finally {
+				// Stops any current VO and frees the channel.
+				Bass.BASS_ChannelStop(vo_channel);
+				
+				vo_channel = Bass.BASS_SampleGetChannel(handle, false);
+				
+				Bass.BASS_ChannelPlay(vo_channel, false);
+				SetVolume(vo_channel, real_volume_vo);
+				
+				SetVolume(bgm_channel, real_volume_bgm);
+				check_for_vo_end = true;
+			}
 		}
 		
 		/// <summary>
