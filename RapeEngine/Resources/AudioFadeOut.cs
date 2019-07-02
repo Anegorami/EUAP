@@ -1,7 +1,6 @@
 ﻿using System;
 
-namespace RapeEngine.Resources
-{
+namespace RapeEngine.Resources {
 	/// <summary>
 	/// FadeOut effect for audio samples.
 	/// </summary>

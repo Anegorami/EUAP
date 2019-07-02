@@ -2,8 +2,7 @@
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Tags;
 
-namespace RapeEngine.Resources
-{
+namespace RapeEngine.Resources {
 	/// <summary>
 	/// Audio sample resource.
 	/// </summary>

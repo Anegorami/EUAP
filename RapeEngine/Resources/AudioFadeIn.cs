@@ -2,8 +2,7 @@
 using RapeEngine.Components;
 using RapeEngine.Resources;
 
-namespace RapeEngine.Resources
-{
+namespace RapeEngine.Resources {
 	/// <summary>
 	/// FadeIn effect for audio samples.
 	/// </summary>
