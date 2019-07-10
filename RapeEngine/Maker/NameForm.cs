@@ -38,15 +38,5 @@ namespace RapeEngine.Maker {
 				MessageBox.Show("Invalid script name!", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-		
-		/// <summary>
-		/// Cancel button click response.
-		/// </summary>
-		/// <param name="sender">Not used.</param>
-		/// <param name="e">Not used.</param>
-		void Button_cancelClick(object sender, EventArgs e) {
-			DialogResult = DialogResult.Cancel;
-			Close();
-		}
 	}
 }

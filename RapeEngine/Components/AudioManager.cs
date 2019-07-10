@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
+
 using Un4seen.Bass;
 
 using RapeEngine.Resources;
@@ -15,6 +16,12 @@ namespace RapeEngine.Components {
 		/// Enumerator for channels.
 		/// </summary>
 		enum TYPE {BGM, BGS, ME, VO, SE}
+		
+		/// <summary>
+		/// Error message when trying to play a non-existent sample.
+		/// </summary>
+		const string ERROR_SAMPLE_NOT_FOUND_MESSAGE = "{0} with filename \"{1}\" wasn't found!\n" +
+			"Make sure that the file is present in the \"{2}\" folder!";
 		
 		/// <summary>
 		/// Dictionary for all of the Audio Samples.
@@ -172,8 +179,40 @@ namespace RapeEngine.Components {
 		}
 		
 		/// <summary>
+		/// Error message when trying to play a non-existent sample.
+		/// </summary>
+		/// <param name="type">Channel type.</param>
+		/// <param name="key">Sample name.</param>
+		static void ErrorSampleNotFound(TYPE type, string key) {
+			// Naming items.
+			string item = "";
+			switch (type) {
+				case (TYPE.BGM):
+					item = "BGM";
+					break;
+				case (TYPE.BGS):
+					item = "BGS";
+					break;
+				case (TYPE.ME):
+					item = "ME";
+					break;
+				case (TYPE.VO):
+					item = "VO";
+					break;
+				case (TYPE.SE):
+					item = "SE";
+					break;
+			}
+			
+			key += ".ogg";
+			
+			string message = String.Format(ERROR_SAMPLE_NOT_FOUND_MESSAGE, item, key, dir[type]);
+			
+			MessageBox.Show(message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+		
+		/// <summary>
 		/// A method to play a sample.
-		/// Also contains a nice error window in case of trying to play a non-existent sample.
 		/// </summary>
 		/// <param name="type">Channel type.</param>
 		/// <param name="key">Dictionary key.</param>
@@ -181,36 +220,7 @@ namespace RapeEngine.Components {
 			try {
 				audio[type][key].Play();
 			} catch (KeyNotFoundException) {
-				// Naming items.
-				string item;
-				switch (type) {
-					case (TYPE.BGM):
-						item = "BGM";
-						break;
-					case (TYPE.BGS):
-						item = "BGS";
-						break;
-					case (TYPE.ME):
-						item = "ME";
-						break;
-					case (TYPE.VO):
-						item = "VO";
-						break;
-					case (TYPE.SE):
-						item = "SE";
-						break;
-					default:
-						item = "???";
-						break;
-				}
-				
-				key += ".ogg";
-				
-				string message = "{0} with filename \"{1}\" wasn't found!\n";
-				message += "Make sure that the file is present in the \"{2}\" folder!";
-				message = String.Format(message, item, key, dir[type]);
-				
-				MessageBox.Show(message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				ErrorSampleNotFound(type, key);
 				return;
 			}
 			active[type] = audio[type][key];

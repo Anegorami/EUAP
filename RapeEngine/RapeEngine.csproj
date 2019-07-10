@@ -40,6 +40,9 @@
     <Reference Include="Microsoft.CSharp">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -57,6 +60,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\AudioManager.cs" />
+    <Compile Include="Components\UserVariables.cs" />
+    <Compile Include="Maker\ElementsKeeper.cs" />
+    <Compile Include="Maker\Actions\FlowIf.cs" />
+    <Compile Include="Maker\Actions\BaseScriptAction.cs" />
+    <Compile Include="Maker\Actions\VarSetFlag.cs" />
+    <Compile Include="Maker\Actions\VirtualNewAction.cs" />
+    <Compile Include="Maker\Conditions\BaseScriptCondition.cs" />
+    <Compile Include="Maker\Conditions\VarFlag.cs" />
+    <Compile Include="Maker\Conditions\VirtualNewCondition.cs" />
+    <Compile Include="Maker\ElementManager.cs" />
+    <Compile Include="Maker\IScriptElement.cs" />
     <Compile Include="Maker\MainForm.cs" />
     <Compile Include="Maker\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -64,6 +78,19 @@
     <Compile Include="Maker\NameForm.cs" />
     <Compile Include="Maker\NameForm.Designer.cs">
       <DependentUpon>NameForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Maker\Script.cs" />
+    <Compile Include="Maker\VarFlagForm.cs" />
+    <Compile Include="Maker\VarFlagForm.Designer.cs">
+      <DependentUpon>VarFlagForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Maker\VariablesForm.cs" />
+    <Compile Include="Maker\VariablesForm.Designer.cs">
+      <DependentUpon>VariablesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Maker\VirtualNewForm.cs" />
+    <Compile Include="Maker\VirtualNewForm.Designer.cs">
+      <DependentUpon>VirtualNewForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,6 +114,15 @@
     <EmbeddedResource Include="Maker\NameForm.resx">
       <DependentUpon>NameForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Maker\VarFlagForm.resx">
+      <DependentUpon>VarFlagForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Maker\VariablesForm.resx">
+      <DependentUpon>VariablesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Maker\VirtualNewForm.resx">
+      <DependentUpon>VirtualNewForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -95,6 +131,8 @@
   <ItemGroup>
     <Folder Include="Components" />
     <Folder Include="Maker" />
+    <Folder Include="Maker\Actions" />
+    <Folder Include="Maker\Conditions" />
     <Folder Include="Resources" />
     <Folder Include="Utilities" />
   </ItemGroup>
