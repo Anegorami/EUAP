@@ -115,6 +115,10 @@ namespace RapeEngine.Maker {
 			description = "Set a flag to True or False.";
 			actions_vars.Items.Add(new Item(name, description, typeof(VarSetFlag)));
 			
+			name = "Set a variable";
+			description = "Set a value for a variable.";
+			actions_vars.Items.Add(new Item(name, description, typeof(VarSetVar)));
+			
 			RootActions.Add(actions_vars);
 		}
 		
