@@ -3,11 +3,11 @@ using System.Windows.Forms;
 
 using RapeEngine.Components;
 
-namespace RapeEngine.Maker.Actions {
+namespace RapeEngine.Maker {
 	/// <summary>
 	/// Form for setting up a variable.
 	/// </summary>
-	public partial class VarSetVarForm: Form {
+	public partial class VarVarForm: Form {
 		/// <summary>
 		/// Error message when the entered value cannot be converted to int;
 		/// </summary>
@@ -17,6 +17,12 @@ namespace RapeEngine.Maker.Actions {
 		/// Error message when the user tries to setup a division by zero.
 		/// </summary>
 		const string ERROR_DIVIDE_BY_ZERO = "You cannot divide by zero, you idiot.";
+		
+		readonly string[] action_operations = {"Set value (=)", "Add to value (+)", "Substract from value (-)",
+			"Multiply value (*)", "Divide by value (/)", "Get a remainder of division (%)"};
+		
+		readonly string[] condition_operations = {"Equal to (=)", "Not equal to (!=)", "Lesser than (<)",
+			"Lesser than or equal to (<=)", "Greater than (>)", "Greater than or equal to (>=)"};
 		
 		/// <summary>
 		/// Variable index.
@@ -49,17 +55,17 @@ namespace RapeEngine.Maker.Actions {
 		/// <summary>
 		/// Constructor.
 		/// </summary>
+		/// <param name="mode">Form mode.</param>
 		/// <param name="index">Variable index.</param>
 		/// <param name="operation">Operation index.</param>
 		/// <param name="value">Either a constant value or a variable index.</param>
 		/// <param name="is_variable">If this flag is true, Value contain a variable index.</param>
-		public VarSetVarForm(int index = 0, int operation = 0, int value = 0, bool is_variable = false) {
+		public VarVarForm(VAR_FORM_MODE mode, int index, int operation, int value, bool is_variable) {
 			// Required.
 			InitializeComponent();
 			
 			// Constructor code goes here...
 			var1.Text = UserVariables.GetVariableName(index);
-			operation_box.SelectedIndex = operation;
 			value_box.Text = (is_variable)? "0": Convert.ToString(value);
 			var2.Text = UserVariables.GetVariableName((is_variable)? value: 0);
 			radio_value.Checked = !is_variable;
@@ -68,6 +74,20 @@ namespace RapeEngine.Maker.Actions {
 			
 			Index = index;
 			Value = value;
+			
+			if (mode == VAR_FORM_MODE.ACTION) {
+				foreach (string item in action_operations) {
+					operation_box.Items.Add(item);
+				}
+			} else {
+				foreach (string item in condition_operations) {
+					operation_box.Items.Add(item);
+				}
+				label1.Text = "If variable";
+				label2.Text = "is";
+			}
+			
+			operation_box.SelectedIndex = operation;
 		}
 		
 		/// <summary>
@@ -138,4 +158,6 @@ namespace RapeEngine.Maker.Actions {
 			Close();
 		}
 	}
+	
+	public enum VAR_FORM_MODE {ACTION, CONDITION}
 }

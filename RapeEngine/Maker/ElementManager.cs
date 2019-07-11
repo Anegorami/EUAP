@@ -137,6 +137,10 @@ namespace RapeEngine.Maker {
 			description = "Condition that checks the flag state.";
 			conditions_vars.Items.Add(new Item(name, description, typeof(VarFlag)));
 			
+			name = "Variable condition";
+			description = "Condition that checks the variable value.";
+			conditions_vars.Items.Add(new Item(name, description, typeof(VarVar)));
+			
 			RootConditions.Add(conditions_vars);
 		}
 		

@@ -69,6 +69,8 @@ namespace RapeEngine.Maker {
 			
 			// Initialize menu actions.
 			SCRIPT_MENU_ACTIONS = new Action[]{CreateScript, RenameScript, DeleteScript, UpdateScriptsDirectory};
+			
+			UpdateScriptView();
 		}
 		
 		/// <summary>

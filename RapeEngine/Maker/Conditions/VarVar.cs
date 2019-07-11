@@ -5,17 +5,16 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 
 using RapeEngine.Components;
-using RapeEngine.Maker;
 
-namespace RapeEngine.Maker.Actions {
+namespace RapeEngine.Maker.Conditions {
 	/// <summary>
-	/// An action to set value for a variable.
+	/// Variable-driven condition.
 	/// </summary>
-	public sealed class VarSetVar: BaseScriptAction {
+	public sealed class VarVar: BaseScriptCondition {
 		/// <summary>
 		/// Node format.
 		/// </summary>
-		const string FORMAT = "{0} {1} {2}";
+		const string FORMAT = "If {0} {1} {2}";
 		
 		/// <summary>
 		/// Variable index.
@@ -44,7 +43,7 @@ namespace RapeEngine.Maker.Actions {
 		/// <summary>
 		/// Visual representation for operation index.
 		/// </summary>
-		readonly string[] operations = {"=", "+=", "-=", "*=", "/=", "%="};
+		readonly string[] operations = {"==", "!=", "<", "<=", ">", ">="};
 		
 		/// <summary>
 		/// Node for a visual representation.
@@ -64,7 +63,7 @@ namespace RapeEngine.Maker.Actions {
 		/// </summary>
 		/// <returns>True, if the initialization was successful, false otherwise.</returns>
 		public override bool Initialize() {
-			var form = new VarVarForm(VAR_FORM_MODE.ACTION, index, operation, value, is_variable);
+			var form = new VarVarForm(VAR_FORM_MODE.CONDITION, index, operation, value, is_variable);
 			if (form.ShowDialog() == DialogResult.OK) {
 				index = form.Index;
 				operation = form.Operation;

@@ -44,7 +44,7 @@ namespace RapeEngine.Maker.Conditions {
 		/// </summary>
 		/// <returns>True if the initialization went fine, false otherwise.</returns>
 		public override bool Initialize() {
-			var form = new VarFlagForm(index, value, "This condition is true if flag", "is set to");
+			var form = new VarFlagForm(index, value, "If", "is set to");
 			if (form.ShowDialog() == DialogResult.OK) {
 				index = form.Index;
 				value = form.Value;

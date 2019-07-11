@@ -49,15 +49,15 @@ namespace RapeEngine.Maker
 			// 
 			this.label1.Location = new System.Drawing.Point(12, 9);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(151, 23);
+			this.label1.Size = new System.Drawing.Size(90, 23);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "label1";
 			// 
 			// flag
 			// 
-			this.flag.Location = new System.Drawing.Point(169, 9);
+			this.flag.Location = new System.Drawing.Point(113, 9);
 			this.flag.Name = "flag";
-			this.flag.Size = new System.Drawing.Size(100, 23);
+			this.flag.Size = new System.Drawing.Size(156, 23);
 			this.flag.TabIndex = 1;
 			this.flag.TabStop = true;
 			this.flag.Text = "linkLabel1";
@@ -73,7 +73,7 @@ namespace RapeEngine.Maker
 			// 
 			// switch_true
 			// 
-			this.switch_true.Location = new System.Drawing.Point(158, 35);
+			this.switch_true.Location = new System.Drawing.Point(113, 35);
 			this.switch_true.Name = "switch_true";
 			this.switch_true.Size = new System.Drawing.Size(55, 24);
 			this.switch_true.TabIndex = 3;
@@ -83,7 +83,7 @@ namespace RapeEngine.Maker
 			// 
 			// switch_false
 			// 
-			this.switch_false.Location = new System.Drawing.Point(219, 35);
+			this.switch_false.Location = new System.Drawing.Point(163, 35);
 			this.switch_false.Name = "switch_false";
 			this.switch_false.Size = new System.Drawing.Size(50, 24);
 			this.switch_false.TabIndex = 4;
