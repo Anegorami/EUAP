@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 
 using RapeEngine.Maker.Actions;
+using RapeEngine.Maker.Conditions;
 
 namespace RapeEngine.Maker {
 	/// <summary>
@@ -18,14 +19,25 @@ namespace RapeEngine.Maker {
 		readonly string filename;
 		
 		/// <summary>
+		/// Serialization settings instance.
+		/// </summary>
+		readonly JsonSerializerSettings settings = new JsonSerializerSettings();
+		
+		/// <summary>
 		/// Main actions array.
 		/// </summary>
 		readonly ElementsKeeper actions = new ElementsKeeper();
 		
 		/// <summary>
-		/// Serialization settings instance.
+		/// Clipboard element.
 		/// </summary>
-		readonly JsonSerializerSettings settings = new JsonSerializerSettings();
+		IScriptElement clipboard_item;
+		
+		/// <summary>
+		/// Path of the clipboard element.
+		/// Used for restoration in case of an error.
+		/// </summary>
+		List<int> clipboard_path;
 		
 		/// <summary>
 		/// Constructor.
@@ -45,12 +57,19 @@ namespace RapeEngine.Maker {
 		}
 		
 		/// <summary>
+		/// Method to restore the clipboard item.
+		/// </summary>
+		void RestoreClipboard() {
+			actions.MoveTo(clipboard_item, clipboard_path);
+		}
+		
+		/// <summary>
 		/// Method to get a visual representation of the script.
 		/// </summary>
 		/// <returns>List of nodes.</returns>
 		public List<TreeNode> GetNodes() {
 			var result = new List<TreeNode>();
-			foreach (BaseScriptAction action in actions) {
+			foreach (IScriptElement action in actions) {
 				result.Add(action.Node);
 			}
 			return result;
@@ -84,11 +103,41 @@ namespace RapeEngine.Maker {
 		/// Method for saving the script.
 		/// </summary>
 		public void Save() {
+			File.Delete(filename);
 			var file = File.OpenWrite(filename);
 			var stream = new StreamWriter(file);
 			stream.Write(JsonConvert.SerializeObject(actions, Formatting.None, settings));
 			stream.Close();
 			file.Close();
+		}
+		
+		/// <summary>
+		/// Method to move the item into the clipboard.
+		/// </summary>
+		/// <param name="path"></param>
+		public void MoveToClipboard(List<int> path) {
+			clipboard_item = actions.GetElement(path);
+			
+			actions.Remove(path);
+			
+			clipboard_path = path;
+			clipboard_path[clipboard_path.Count - 1] -= 1;
+		}
+		
+		/// <summary>
+		/// Method to move the item from the clipboard.
+		/// </summary>
+		/// <param name="destination"></param>
+		public void MoveFromClipboard(List<int> destination) {
+			if (clipboard_item != null) {
+				Type type = clipboard_item.GetType();
+				bool accepted_type = (type != typeof(VirtualNewAction)) && (type != typeof(VirtualNewCondition));
+				if (accepted_type) {
+					if (!actions.MoveTo(clipboard_item, destination)) {
+						RestoreClipboard();
+					}
+				}
+			}
 		}
 	}
 }

@@ -89,6 +89,7 @@ namespace RapeEngine.Maker {
 			// 
 			// actions_tree
 			// 
+			this.actions_tree.AllowDrop = true;
 			this.actions_tree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 			| System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
@@ -96,7 +97,10 @@ namespace RapeEngine.Maker {
 			this.actions_tree.Name = "actions_tree";
 			this.actions_tree.Size = new System.Drawing.Size(1038, 638);
 			this.actions_tree.TabIndex = 0;
+			this.actions_tree.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.Actions_treeItemDrag);
 			this.actions_tree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.Actions_treeNodeMouseDoubleClick);
+			this.actions_tree.DragDrop += new System.Windows.Forms.DragEventHandler(this.Actions_treeDragDrop);
+			this.actions_tree.DragEnter += new System.Windows.Forms.DragEventHandler(this.Actions_treeDragEnter);
 			this.actions_tree.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Actions_treeKeyDown);
 			// 
 			// MainForm

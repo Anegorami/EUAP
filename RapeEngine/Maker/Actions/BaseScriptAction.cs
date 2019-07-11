@@ -16,11 +16,30 @@ namespace RapeEngine.Maker.Actions {
 		public abstract TreeNode Node {get;}
 		
 		/// <summary>
+		/// Method to get a sub element.
+		/// </summary>
+		/// <param name="path">Set of indexes for identification.</param>
+		/// <returns>Sub element.</returns>
+		public virtual IScriptElement GetSubElement(List<int> path) {
+			return null;
+		}
+		
+		/// <summary>
 		/// Method that is called when the user adds the action.
 		/// </summary>
 		/// <returns>True if the action should be added, false otherwise.</returns>
 		public virtual bool Initialize() {
 			return true;
+		}
+		
+		/// <summary>
+		/// Method for adding a sub element.
+		/// </summary>
+		/// <param name="target">Sub element to add.</param>
+		/// <param name="path">Set of indexes for destination identification.</param>
+		/// <returns>True, if the addition was successful, false otherwise.</returns>
+		public virtual bool AddSubElement(IScriptElement target, List<int> path) {
+			return false;
 		}
 		
 		/// <summary>

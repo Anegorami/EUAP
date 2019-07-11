@@ -77,6 +77,29 @@ namespace RapeEngine.Maker.Actions {
 		}
 		
 		/// <summary>
+		/// Method for sub element retrieval.
+		/// </summary>
+		/// <param name="path">Set of indexes for identification.</param>
+		/// <returns>Sub element.</returns>
+		public override IScriptElement GetSubElement(List<int> path) {
+			if (path.Count >= 2) {
+				int root = path[0];
+				path.RemoveAt(0);
+				
+				switch (root) {
+					case 0:
+						return conditions.GetElement(path);
+					case 1:
+						return true_branch.GetElement(path);
+					case 2:
+						return false_branch.GetElement(path);	
+				}
+			}
+			
+			return null;
+		}
+		
+		/// <summary>
 		/// Initialization method.
 		/// </summary>
 		/// <returns>True, since no GUI is present.</returns>
@@ -85,6 +108,28 @@ namespace RapeEngine.Maker.Actions {
 			true_branch.Add(new VirtualNewAction(true_branch));
 			false_branch.Add(new VirtualNewAction(false_branch));
 			return true;
+		}
+		
+		/// <summary>
+		/// Method for sub element addition.
+		/// </summary>
+		/// <param name="target">Element to add.</param>
+		/// <param name="path">Set of indexes for destination identification.</param>
+		/// <returns>True if the addition was successful, false otherwise.</returns>
+		public override bool AddSubElement(IScriptElement target, List<int> path) {
+			int root = path[0];
+			path.RemoveAt(0);
+			
+			switch (root) {
+				case 0:
+					return conditions.MoveTo(target, path);
+				case 1:
+					return true_branch.MoveTo(target, path);
+				case 2:
+					return false_branch.MoveTo(target, path);
+			}
+			
+			return false;
 		}
 		
 		/// <summary>
@@ -129,7 +174,7 @@ namespace RapeEngine.Maker.Actions {
 				switch (root) {
 					case 0:
 						conditions.Remove(path);
-						return;
+						break;
 					case 1:
 						true_branch.Remove(path);
 						break;

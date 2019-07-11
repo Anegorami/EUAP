@@ -16,11 +16,30 @@ namespace RapeEngine.Maker.Conditions {
 		public abstract TreeNode Node {get;}
 		
 		/// <summary>
+		/// Method for sub element retrieval.
+		/// </summary>
+		/// <param name="path">Set of indexes for identification.</param>
+		/// <returns>Sub element.</returns>
+		public virtual IScriptElement GetSubElement(List<int> path) {
+			return null;
+		}
+		
+		/// <summary>
 		/// Initialization method.
 		/// </summary>
 		/// <returns>True, if the initialization went fine, false otherwise.</returns>
 		public virtual bool Initialize() {
 			return true;
+		}
+		
+		/// <summary>
+		/// Method for sub element addition.
+		/// </summary>
+		/// <param name="target">Element to add.</param>
+		/// <param name="path">Set of indexes for destination identification.</param>
+		/// <returns>True, if the addition was successful, false otherwise.</returns>
+		public virtual bool AddSubElement(IScriptElement target, List<int> path) {
+			return false;
 		}
 		
 		/// <summary>

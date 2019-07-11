@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -290,6 +291,7 @@ namespace RapeEngine.Maker {
 		void Button_varsClick(object sender, EventArgs e) {
 			var form = new VariablesForm();
 			form.ShowDialog();
+			UpdateScriptView();
 		}
 		
 		/// <summary>
@@ -312,6 +314,41 @@ namespace RapeEngine.Maker {
 		void Actions_treeKeyDown(object sender, KeyEventArgs e) {
 			if (e.KeyCode == Keys.Delete) {
 				active_script.Remove(getFullPath(actions_tree.SelectedNode));
+				UpdateScriptView();
+			}
+		}
+		
+		/// <summary>
+		/// Dragon Drop: Beginning.
+		/// </summary>
+		/// <param name="sender">Not used.</param>
+		/// <param name="e">Node to move.</param>
+		void Actions_treeItemDrag(object sender, ItemDragEventArgs e) {
+			DoDragDrop(e.Item, DragDropEffects.Move);
+		}
+		
+		/// <summary>
+		/// Dragon Drop 2: The Drop Effect.
+		/// </summary>
+		/// <param name="sender">Not used.</param>
+		/// <param name="e">Effect to apply.</param>
+		void Actions_treeDragEnter(object sender, DragEventArgs e) {
+			e.Effect = DragDropEffects.Move;
+		}
+		
+		/// <summary>
+		/// Dragon Drop 3: Finale.
+		/// </summary>
+		/// <param name="sender">Not used.</param>
+		/// <param name="e">Windows Form's data structure.</param>
+		void Actions_treeDragDrop(object sender, DragEventArgs e) {
+			Point target_point = actions_tree.PointToClient(new Point(e.X, e.Y));
+			TreeNode target = actions_tree.GetNodeAt(target_point);
+			var dragged = (TreeNode)e.Data.GetData(typeof(TreeNode));
+			if ((target != null) && (dragged != target)) {
+				active_script.MoveToClipboard(getFullPath(dragged));
+				actions_tree.Nodes.Remove(dragged);
+				active_script.MoveFromClipboard(getFullPath(target));
 				UpdateScriptView();
 			}
 		}

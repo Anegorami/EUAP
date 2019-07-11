@@ -19,6 +19,21 @@ namespace RapeEngine.Maker {
 		bool Initialize();
 		
 		/// <summary>
+		/// Method for sub element retrieval.
+		/// </summary>
+		/// <param name="path">Set of indexes for identification.</param>
+		/// <returns>Element.</returns>
+		IScriptElement GetSubElement(List<int> path);
+		
+		/// <summary>
+		/// Method for sub element addition.
+		/// </summary>
+		/// <param name="target">Element to add.</param>
+		/// <param name="path">Set of indexes for destination identification.</param>
+		/// <returns>True, if the addition was successful, false otherwise.</returns>
+		bool AddSubElement(IScriptElement target, List<int> path);
+		
+		/// <summary>
 		/// Edit method.
 		/// </summary>
 		void Edit();
