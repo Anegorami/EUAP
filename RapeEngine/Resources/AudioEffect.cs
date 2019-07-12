@@ -1,7 +1,6 @@
 ﻿using System;
 
-namespace RapeEngine.Resources
-{
+namespace RapeEngine.Resources {
 	/// <summary>
 	/// A base class for the audio effects.
 	/// </summary>

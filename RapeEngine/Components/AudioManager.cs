@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
+
 using Un4seen.Bass;
 
 using RapeEngine.Resources;
@@ -17,6 +18,12 @@ namespace RapeEngine.Components {
 		enum TYPE {BGM, BGS, ME, VO, SE}
 		
 		/// <summary>
+		/// Error message when trying to play a non-existent sample.
+		/// </summary>
+		const string ERROR_SAMPLE_NOT_FOUND_MESSAGE = "{0} with filename \"{1}\" wasn't found!\n" +
+			"Make sure that the file is present in the \"{2}\" folder!";
+		
+		/// <summary>
 		/// Dictionary for all of the Audio Samples.
 		/// </summary>
 		static readonly Dictionary<TYPE, Dictionary<string, AudioSample>> audio =
@@ -26,11 +33,6 @@ namespace RapeEngine.Components {
 		/// Dictionary for the active Audio Samples.
 		/// </summary>
 		static readonly Dictionary<TYPE, AudioSample> active = new Dictionary<TYPE, AudioSample>();
-		
-		/// <summary>
-		/// List with the active SEs.
-		/// </summary>
-		static readonly List<AudioSample> active_se = new List<AudioSample>();
 		
 		/// <summary>
 		/// Dictionary with the channel volumes.
@@ -88,7 +90,7 @@ namespace RapeEngine.Components {
 		/// </summary>
 		public static bool IsSEPlaying {
 			get {
-				return active_se.Count > 0;
+				return IsPlaying(TYPE.SE);
 			}
 		}
 		
@@ -172,8 +174,53 @@ namespace RapeEngine.Components {
 		}
 		
 		/// <summary>
+		/// Method to get all the loaded samples.
+		/// </summary>
+		/// <param name="type">Type of the samples to get.</param>
+		/// <returns>List of keys.</returns>
+		static List<string> GetKeys(TYPE type) {
+			var result = new List<string>();
+			foreach (string key in audio[type].Keys) {
+				result.Add(key);
+			}
+			return result;
+		}
+		
+		/// <summary>
+		/// Error message when trying to play a non-existent sample.
+		/// </summary>
+		/// <param name="type">Channel type.</param>
+		/// <param name="key">Sample name.</param>
+		static void ErrorSampleNotFound(TYPE type, string key) {
+			// Naming items.
+			string item = "";
+			switch (type) {
+				case (TYPE.BGM):
+					item = "BGM";
+					break;
+				case (TYPE.BGS):
+					item = "BGS";
+					break;
+				case (TYPE.ME):
+					item = "ME";
+					break;
+				case (TYPE.VO):
+					item = "VO";
+					break;
+				case (TYPE.SE):
+					item = "SE";
+					break;
+			}
+			
+			key += ".ogg";
+			
+			string message = String.Format(ERROR_SAMPLE_NOT_FOUND_MESSAGE, item, key, dir[type]);
+			
+			MessageBox.Show(message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+		
+		/// <summary>
 		/// A method to play a sample.
-		/// Also contains a nice error window in case of trying to play a non-existent sample.
 		/// </summary>
 		/// <param name="type">Channel type.</param>
 		/// <param name="key">Dictionary key.</param>
@@ -181,36 +228,7 @@ namespace RapeEngine.Components {
 			try {
 				audio[type][key].Play();
 			} catch (KeyNotFoundException) {
-				// Naming items.
-				string item;
-				switch (type) {
-					case (TYPE.BGM):
-						item = "BGM";
-						break;
-					case (TYPE.BGS):
-						item = "BGS";
-						break;
-					case (TYPE.ME):
-						item = "ME";
-						break;
-					case (TYPE.VO):
-						item = "VO";
-						break;
-					case (TYPE.SE):
-						item = "SE";
-						break;
-					default:
-						item = "???";
-						break;
-				}
-				
-				key += ".ogg";
-				
-				string message = "{0} with filename \"{1}\" wasn't found!\n";
-				message += "Make sure that the file is present in the \"{2}\" folder!";
-				message = String.Format(message, item, key, dir[type]);
-				
-				MessageBox.Show(message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				ErrorSampleNotFound(type, key);
 				return;
 			}
 			active[type] = audio[type][key];
@@ -224,15 +242,6 @@ namespace RapeEngine.Components {
 			if (active.ContainsKey(type)) {
 				active[type].Stop();
 			}
-		}
-		
-		/// <summary>
-		/// Predicate for the removal of the stopped SEs.
-		/// </summary>
-		/// <param name="sample">Sample to test.</param>
-		/// <returns>True if the sample is playing, false otherwise.</returns>
-		static bool IsAudioSamplePlaying(AudioSample sample) {
-			return sample.IsPlaying;
 		}
 		
 		/// <summary>
@@ -295,12 +304,6 @@ namespace RapeEngine.Components {
 				}
 			}
 			
-			// Active SE update and cleaning.
-			foreach (AudioSample sample in active_se) {
-				sample.Update();
-			}
-			active_se.RemoveAll(IsAudioSamplePlaying);
-			
 			// Effect update and cleaning.
 			foreach (AudioEffect effect in effects) {
 				effect.Update(dt);
@@ -309,7 +312,47 @@ namespace RapeEngine.Components {
 		}
 		
 		/// <summary>
-		/// A method to play the background music.
+		/// Method to get all BGM keys.
+		/// </summary>
+		/// <returns>List of BGM keys.</returns>
+		public static List<string> GetBGMKeys() {
+			return GetKeys(TYPE.BGM);
+		}
+		
+		/// <summary>
+		/// Method to get all BGS keys.
+		/// </summary>
+		/// <returns>List of BGS keys.</returns>
+		public static List<string> GetBGSKeys() {
+			return GetKeys(TYPE.BGS);
+		}
+		
+		/// <summary>
+		/// Method to get all ME keys.
+		/// </summary>
+		/// <returns>List of ME keys.</returns>
+		public static List<string> GetMEKeys() {
+			return GetKeys(TYPE.ME);
+		}
+		
+		/// <summary>
+		/// Method to get all VO keys.
+		/// </summary>
+		/// <returns>List of VO keys.</returns>
+		public static List<string> GetVOKeys() {
+			return GetKeys(TYPE.VO);
+		}
+		
+		/// <summary>
+		/// Method to get all SE keys.
+		/// </summary>
+		/// <returns>List of SE keys.</returns>
+		public static List<string> GetSEKeys() {
+			return GetKeys(TYPE.SE);
+		}
+		
+		/// <summary>
+		/// Method to play the background music.
 		/// </summary>
 		/// <param name="key">Filename without the extension.</param>
 		public static void PlayBGM(string key) {
@@ -320,7 +363,7 @@ namespace RapeEngine.Components {
 		}
 		
 		/// <summary>
-		/// A method to play the background sounds.
+		/// Method to play the background sounds.
 		/// </summary>
 		/// <param name="key">Filename without the extension.</param>
 		public static void PlayBGS(string key) {
@@ -331,7 +374,7 @@ namespace RapeEngine.Components {
 		}
 		
 		/// <summary>
-		/// A method to play a music effect.
+		/// Method to play a music effect.
 		/// </summary>
 		/// <param name="key">Filename without the extension.</param>
 		/// <param name="time">Time of the BGM and BGS fadein (in milliseconds).</param>
@@ -351,7 +394,7 @@ namespace RapeEngine.Components {
 		}
 		
 		/// <summary>
-		/// A method to play a voice file.
+		/// Method to play a voice file.
 		/// </summary>
 		/// <param name="key">Filename without the extension.</param>
 		public static void PlayVO(string key) {
@@ -360,18 +403,15 @@ namespace RapeEngine.Components {
 		}
 		
 		/// <summary>
-		/// A method to play the sound effect.
+		/// Method to play the sound effect.
 		/// </summary>
 		/// <param name="key">Filename without the extension.</param>
 		public static void PlaySE(string key) {
 			Play(TYPE.SE, key);
-			if (active.ContainsKey(TYPE.SE)) {
-				active_se.Add(active[TYPE.SE]);
-			}
 		}
 		
 		/// <summary>
-		/// A method to stop the currently playing BGM.
+		/// Method to stop the currently playing BGM.
 		/// </summary>
 		/// <param name="time">Fade time (in milliseconds).</param>
 		public static void StopBGM(int time = 3000) {
@@ -379,7 +419,7 @@ namespace RapeEngine.Components {
 		}
 		
 		/// <summary>
-		/// A method to stop the currently playing BGS.
+		/// Method to stop the currently playing BGS.
 		/// </summary>
 		/// <param name="time">Fade time (in milliseconds).</param>
 		public static void StopBGS(int time = 3000) {
@@ -387,26 +427,24 @@ namespace RapeEngine.Components {
 		}
 		
 		/// <summary>
-		/// A method to stop the currently playing ME.
+		/// Method to stop the currently playing ME.
 		/// </summary>
 		public static void StopME() {
 			Stop(TYPE.ME);
 		}
 		
 		/// <summary>
-		/// A method to stop the voice file.
+		/// Method to stop the voice file.
 		/// </summary>
 		public static void StopVO() {
 			Stop(TYPE.VO);
 		}
 		
 		/// <summary>
-		/// A method to stop all active SEs.
+		/// Method to stop all active SEs.
 		/// </summary>
 		public static void StopSE() {
-			foreach (AudioSample sample in active_se) {
-				sample.Stop();
-			}
+			Stop(TYPE.SE);
 		}
 	}
 }
