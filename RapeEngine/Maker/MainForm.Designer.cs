@@ -10,6 +10,9 @@ namespace RapeEngine.Maker {
 		private System.Windows.Forms.TreeView actions_tree;
 		private System.Windows.Forms.ListBox scripts_list;
 		private System.Windows.Forms.Button button_vars;
+		private System.Windows.Forms.Timer update;
+		private System.ComponentModel.IContainer components;
+		private System.Windows.Forms.Button button_audio;
 		
 		/// <summary>
 		/// Disposes resources used by the form.
@@ -30,11 +33,14 @@ namespace RapeEngine.Maker {
 		/// not be able to load this method if it was changed manually.
 		/// </summary>
 		private void InitializeComponent() {
+			this.components = new System.ComponentModel.Container();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.scripts_list = new System.Windows.Forms.ListBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.button_audio = new System.Windows.Forms.Button();
 			this.button_vars = new System.Windows.Forms.Button();
 			this.actions_tree = new System.Windows.Forms.TreeView();
+			this.update = new System.Windows.Forms.Timer(this.components);
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
@@ -67,6 +73,7 @@ namespace RapeEngine.Maker {
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 			| System.Windows.Forms.AnchorStyles.Left) 
 			| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.button_audio);
 			this.groupBox2.Controls.Add(this.button_vars);
 			this.groupBox2.Controls.Add(this.actions_tree);
 			this.groupBox2.Location = new System.Drawing.Point(218, 12);
@@ -76,10 +83,21 @@ namespace RapeEngine.Maker {
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Script Editor";
 			// 
+			// button_audio
+			// 
+			this.button_audio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_audio.Location = new System.Drawing.Point(932, 663);
+			this.button_audio.Name = "button_audio";
+			this.button_audio.Size = new System.Drawing.Size(112, 23);
+			this.button_audio.TabIndex = 2;
+			this.button_audio.Text = "Audio Resources";
+			this.button_audio.UseVisualStyleBackColor = true;
+			this.button_audio.Click += new System.EventHandler(this.Button_audioClick);
+			// 
 			// button_vars
 			// 
 			this.button_vars.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button_vars.Location = new System.Drawing.Point(932, 663);
+			this.button_vars.Location = new System.Drawing.Point(814, 663);
 			this.button_vars.Name = "button_vars";
 			this.button_vars.Size = new System.Drawing.Size(112, 23);
 			this.button_vars.TabIndex = 1;
@@ -102,6 +120,11 @@ namespace RapeEngine.Maker {
 			this.actions_tree.DragDrop += new System.Windows.Forms.DragEventHandler(this.Actions_treeDragDrop);
 			this.actions_tree.DragEnter += new System.Windows.Forms.DragEventHandler(this.Actions_treeDragEnter);
 			this.actions_tree.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Actions_treeKeyDown);
+			// 
+			// update
+			// 
+			this.update.Enabled = true;
+			this.update.Tick += new System.EventHandler(this.UpdateTick);
 			// 
 			// MainForm
 			// 

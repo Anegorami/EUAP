@@ -55,7 +55,7 @@ namespace RapeEngine.Maker {
 		/// <param name="sender">Not used.</param>
 		/// <param name="e">Not used.</param>
 		void FlagLinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-			var form = new VariablesForm(VARIABLES_FORM_RETURN.FLAG, Index);
+			VariablesForm form = VariablesForm.GetFlagInstance(Index);
 			if (form.ShowDialog() == DialogResult.OK) {
 				Index = form.Value;
 				UpdateMe();

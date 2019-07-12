@@ -64,7 +64,7 @@ namespace RapeEngine.Maker.Actions {
 		/// </summary>
 		/// <returns>True, if the initialization was successful, false otherwise.</returns>
 		public override bool Initialize() {
-			var form = new VarVarForm(VAR_FORM_MODE.ACTION, index, operation, value, is_variable);
+			VarVarForm form = VarVarForm.GetActionInstance(index, operation, value, is_variable);
 			if (form.ShowDialog() == DialogResult.OK) {
 				index = form.Index;
 				operation = form.Operation;
@@ -73,13 +73,6 @@ namespace RapeEngine.Maker.Actions {
 				return true;
 			}
 			return false;
-		}
-		
-		/// <summary>
-		/// Edit method.
-		/// </summary>
-		public override void Edit() {
-			Initialize();
 		}
 	}
 }

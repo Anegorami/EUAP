@@ -8,6 +8,11 @@ namespace RapeEngine.Maker {
 	/// </summary>
 	public partial class VirtualNewForm: Form {
 		/// <summary>
+		/// Enumerator for form modes.
+		/// </summary>
+		public enum MODE {ACTIONS, CONDITIONS}
+		
+		/// <summary>
 		/// Return value.
 		/// </summary>
 		public object Value{get; private set;}
@@ -21,16 +26,16 @@ namespace RapeEngine.Maker {
 		/// Constructor.
 		/// </summary>
 		/// <param name="mode">Form mode.</param>
-		public VirtualNewForm(VIRTUAL_NEW_FORM_RETURN mode) {
+		VirtualNewForm(MODE mode) {
 			// Required.
 			InitializeComponent();
 			
 			// Constructor code goes here...
 			switch (mode) {
-				case (VIRTUAL_NEW_FORM_RETURN.ACTION):
+				case (MODE.ACTIONS):
 					target = ElementManager.RootActions;
 					break;
-				case (VIRTUAL_NEW_FORM_RETURN.CONDITION):
+				case (MODE.CONDITIONS):
 					target = ElementManager.RootConditions;
 					Text = "Condition Select";
 					button_ok.Text = "Add condition";
@@ -46,6 +51,22 @@ namespace RapeEngine.Maker {
 			}
 			
 			tree.SelectedNode = tree.Nodes[0];
+		}
+		
+		/// <summary>
+		/// Method for retrieval a form instance in action selection mode.
+		/// </summary>
+		/// <returns>Form instance.</returns>
+		public static VirtualNewForm GetActionsInstance() {
+			return new VirtualNewForm(MODE.ACTIONS);
+		}
+		
+		/// <summary>
+		/// Method for retrieval a form instance in condition selection mode.
+		/// </summary>
+		/// <returns>Form instance.</returns>
+		public static VirtualNewForm GetConditionsInstance() {
+			return new VirtualNewForm(MODE.CONDITIONS);
 		}
 		
 		/// <summary>
@@ -78,9 +99,4 @@ namespace RapeEngine.Maker {
 			}
 		}
 	}
-	
-	/// <summary>
-	/// Enumerator to determine form mode.
-	/// </summary>
-	public enum VIRTUAL_NEW_FORM_RETURN {ACTION, CONDITION}
 }

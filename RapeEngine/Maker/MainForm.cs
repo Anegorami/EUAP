@@ -291,7 +291,7 @@ namespace RapeEngine.Maker {
 		/// <param name="sender">Not used.</param>
 		/// <param name="e">Not used.</param>
 		void Button_varsClick(object sender, EventArgs e) {
-			var form = new VariablesForm();
+			VariablesForm form = VariablesForm.GetInstance();
 			form.ShowDialog();
 			UpdateScriptView();
 		}
@@ -353,6 +353,20 @@ namespace RapeEngine.Maker {
 				active_script.MoveFromClipboard(getFullPath(target));
 				UpdateScriptView();
 			}
+		}
+		
+		/// <summary>
+		/// Response to update timer event.
+		/// </summary>
+		/// <param name="sender">Not used.</param>
+		/// <param name="e">Not used.</param>
+		void UpdateTick(object sender, EventArgs e) {
+			AudioManager.Update(update.Interval);
+		}
+		
+		void Button_audioClick(object sender, EventArgs e) {
+			AudioSampleForm form = AudioSampleForm.GetInstance();
+			form.ShowDialog();
 		}
 	}
 }

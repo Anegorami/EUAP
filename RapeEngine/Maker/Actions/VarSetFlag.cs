@@ -54,12 +54,5 @@ namespace RapeEngine.Maker.Actions {
 			}
 			return false;
 		}
-		
-		/// <summary>
-		/// Edit method.
-		/// </summary>
-		public override void Edit() {
-			Initialize();
-		}
 	}
 }

@@ -41,7 +41,7 @@ namespace RapeEngine.Maker.Actions {
 			// While the new item cannot be initialized - let the user pick another one or cancel the addition.
 			bool enough = false;
 			while (!enough) {
-				var form = new VirtualNewForm(VIRTUAL_NEW_FORM_RETURN.ACTION);
+				VirtualNewForm form = VirtualNewForm.GetActionsInstance();
 				if (form.ShowDialog() == DialogResult.OK) {
 					var action = (BaseScriptAction)form.Value;
 					if (action.Initialize()) {

@@ -63,7 +63,7 @@ namespace RapeEngine.Maker.Conditions {
 		/// </summary>
 		/// <returns>True, if the initialization was successful, false otherwise.</returns>
 		public override bool Initialize() {
-			var form = new VarVarForm(VAR_FORM_MODE.CONDITION, index, operation, value, is_variable);
+			VarVarForm form = VarVarForm.GetConditionInstance(index, operation, value, is_variable);
 			if (form.ShowDialog() == DialogResult.OK) {
 				index = form.Index;
 				operation = form.Operation;
@@ -72,13 +72,6 @@ namespace RapeEngine.Maker.Conditions {
 				return true;
 			}
 			return false;
-		}
-		
-		/// <summary>
-		/// Edit method.
-		/// </summary>
-		public override void Edit() {
-			Initialize();
 		}
 	}
 }

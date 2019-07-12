@@ -123,6 +123,60 @@ namespace RapeEngine.Maker {
 		}
 		
 		/// <summary>
+		/// Initialization submethod for "Audio" actions.
+		/// </summary>
+		static void InitActionsAudio() {
+			string name;
+			string description;
+			
+			name = "Audio";
+			description = "Contains audio-related actions.";
+			var actions_audio = new Group(name, description);
+			
+			name = "Play BGM";
+			description = "Play the background music.";
+			actions_audio.Items.Add(new Item(name, description, typeof(AudioPlayBGM)));
+			
+			name = "Play BGS";
+			description = "Play the background sounds (ambient).";
+			actions_audio.Items.Add(new Item(name, description, typeof(AudioPlayBGS)));
+			
+			name = "Play ME";
+			description = "Play the music effect.";
+			actions_audio.Items.Add(new Item(name, description, typeof(AudioPlayME)));
+			
+			name = "Play VO";
+			description = "Play the voice over.";
+			actions_audio.Items.Add(new Item(name, description, typeof(AudioPlayVO)));
+			
+			name = "Play SE";
+			description = "Play the sound effect.";
+			actions_audio.Items.Add(new Item(name, description, typeof(AudioPlaySE)));
+			
+			name = "Stop BGM";
+			description = "Stop the background music.";
+			actions_audio.Items.Add(new Item(name, description, typeof(AudioStopBGM)));
+			
+			name = "Stop BGS";
+			description = "Stop the background sounds (ambient).";
+			actions_audio.Items.Add(new Item(name, description, typeof(AudioStopBGS)));
+			
+			name = "Stop ME";
+			description = "Stop the music effect.";
+			actions_audio.Items.Add(new Item(name, description, typeof(AudioStopME)));
+			
+			name = "Stop VO";
+			description = "Stop the voice over.";
+			actions_audio.Items.Add(new Item(name, description, typeof(AudioStopVO)));
+			
+			name = "Stop SE";
+			description = "Stop all sound effects.";
+			actions_audio.Items.Add(new Item(name, description, typeof(AudioStopSE)));
+			
+			RootActions.Add(actions_audio);
+		}
+		
+		/// <summary>
 		/// Initialization submethod for "Flags and Variables" conditions.
 		/// </summary>
 		static void InitConditionsVars() {
@@ -150,6 +204,7 @@ namespace RapeEngine.Maker {
 		public static void Init() {
 			InitActionsFlow();
 			InitActionsVars();
+			InitActionsAudio();
 			
 			InitConditionsVars();
 		}

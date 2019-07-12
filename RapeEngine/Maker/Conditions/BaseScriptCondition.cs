@@ -45,7 +45,9 @@ namespace RapeEngine.Maker.Conditions {
 		/// <summary>
 		/// Edit method.
 		/// </summary>
-		public virtual void Edit() {}
+		public virtual void Edit() {
+			Initialize();
+		}
 		
 		/// <summary>
 		/// Subaction edit method.

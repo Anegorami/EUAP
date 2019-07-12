@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 using Un4seen.Bass;
 using Un4seen.Bass.AddOn.Tags;
 
@@ -30,14 +32,14 @@ namespace RapeEngine.Resources {
 		/// <summary>
 		/// Current sample channel.
 		/// </summary>
-		int channel;
+		readonly List<int> channels = new List<int>();
 		
 		/// <summary>
 		/// Field to check if the sample is playing.
 		/// </summary>
 		public bool IsPlaying {
 			get {
-				return Bass.BASS_ChannelIsActive(channel) == BASSActive.BASS_ACTIVE_PLAYING;
+				return (channels.Count > 0);
 			}
 		}
 		
@@ -47,11 +49,15 @@ namespace RapeEngine.Resources {
 		public float Volume {
 			get {
 				float volume = 0;
-				Bass.BASS_ChannelGetAttribute(channel, BASSAttribute.BASS_ATTRIB_VOL, ref volume);
+				if (channels.Count > 0) {
+					Bass.BASS_ChannelGetAttribute(channels[0], BASSAttribute.BASS_ATTRIB_VOL, ref volume);
+				}
 				return volume;
 			}
 			set {
-				Bass.BASS_ChannelSetAttribute(channel, BASSAttribute.BASS_ATTRIB_VOL, value);
+				foreach (int channel in channels) {
+					Bass.BASS_ChannelSetAttribute(channel, BASSAttribute.BASS_ATTRIB_VOL, value);
+				}
 			}
 		}
 		
@@ -84,26 +90,41 @@ namespace RapeEngine.Resources {
 		}
 		
 		/// <summary>
+		/// Method for checking if the channel is inactive.
+		/// Used as predicate for list cleaning.
+		/// </summary>
+		/// <param name="channel">Channel to test the predicate on.</param>
+		/// <returns>True, if the channel is not playing, false otherwise.</returns>
+		static bool IsChannelInactive(int channel) {
+			return Bass.BASS_ChannelIsActive(channel) != BASSActive.BASS_ACTIVE_PLAYING;
+		}
+		
+		/// <summary>
 		/// Update method.
 		/// </summary>
 		public void Update() {
 			if (looped) {
-				long current_position_bytes = Bass.BASS_ChannelGetPosition(channel);
-				double current_position = Bass.BASS_ChannelBytes2Seconds(channel, current_position_bytes);
-				
-				if (current_position > loop_end) {
-					double new_position = loop_start + (current_position - loop_end);
-					Bass.BASS_ChannelSetPosition(channel, new_position);
+				foreach (int channel in channels) {
+					long current_position_bytes = Bass.BASS_ChannelGetPosition(channel);
+					double current_position = Bass.BASS_ChannelBytes2Seconds(channel, current_position_bytes);
+					
+					if (current_position > loop_end) {
+						double new_position = loop_start + (current_position - loop_end);
+						Bass.BASS_ChannelSetPosition(channel, new_position);
+					}
 				}
 			}
+			
+			channels.RemoveAll(IsChannelInactive);
 		}
 		
 		/// <summary>
 		/// A method to play the sample.
 		/// </summary>
 		public void Play() {
-			channel = Bass.BASS_SampleGetChannel(handle, false);
+			int channel = Bass.BASS_SampleGetChannel(handle, false);
 			Bass.BASS_ChannelPlay(channel, false);
+			channels.Add(channel);
 			
 			// Enable auto looping for looped samples without loop tags.
 			if ((looped) && (loop_start < 0)) {
@@ -115,7 +136,9 @@ namespace RapeEngine.Resources {
 		/// A method to stop the sample.
 		/// </summary>
 		public void Stop() {
-			Bass.BASS_ChannelStop(channel);
+			foreach (int channel in channels) {
+				Bass.BASS_ChannelStop(channel);
+			}
 		}
 	}
 }

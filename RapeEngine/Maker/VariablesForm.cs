@@ -10,6 +10,11 @@ namespace RapeEngine.Maker {
 	/// </summary>
 	public partial class VariablesForm: Form {
 		/// <summary>
+		/// Enumerator for form return value.
+		/// </summary>
+		enum MODE {ALL, FLAGS, VARIABLES}
+		
+		/// <summary>
 		/// Amount of items per group.
 		/// </summary>
 		const int ITEMS_PER_GROUP = 20;
@@ -37,7 +42,7 @@ namespace RapeEngine.Maker {
 		/// <summary>
 		/// Form mode.
 		/// </summary>
-		readonly VARIABLES_FORM_RETURN mode;
+		readonly MODE mode;
 		
 		/// <summary>
 		/// Return value.
@@ -49,7 +54,7 @@ namespace RapeEngine.Maker {
 		/// </summary>
 		/// <param name="_mode">Form mode.</param>
 		/// <param name="index">Index of the selected item.</param>
-		public VariablesForm(VARIABLES_FORM_RETURN _mode = VARIABLES_FORM_RETURN.NOTHING, int index = 0) {
+		VariablesForm(MODE _mode = MODE.ALL, int index = 0) {
 			// Required.
 			InitializeComponent();
 			
@@ -60,22 +65,48 @@ namespace RapeEngine.Maker {
 			// Set the mode.
 			mode = _mode;
 			switch (mode) {
-				case (VARIABLES_FORM_RETURN.NOTHING):
+				case (MODE.ALL):
 					button_ok.Enabled = false;
 					button_ok.Text = "";
 					button_close.Text = "Close";
 					break;
-				case (VARIABLES_FORM_RETURN.FLAG):
+				case (MODE.FLAGS):
 					tabs.TabPages.Remove(tab_vars);
 					flags_list_group.SelectedIndex = index / ITEMS_PER_GROUP;
 					flags_list_item.SelectedIndex = index % ITEMS_PER_GROUP;
 					break;
-				case (VARIABLES_FORM_RETURN.VARIABLE):
+				case (MODE.VARIABLES):
 					tabs.TabPages.Remove(tab_flags);
 					vars_list_group.SelectedIndex = index / ITEMS_PER_GROUP;
 					vars_list_item.SelectedIndex = index % ITEMS_PER_GROUP;
 					break;
 			}
+		}
+		
+		/// <summary>
+		/// Method for retrieving a basic instance of the form.
+		/// </summary>
+		/// <returns>Form instance.</returns>
+		public static VariablesForm GetInstance() {
+			return new VariablesForm();
+		}
+		
+		/// <summary>
+		/// Method for retrieving form in a flag selection mode.
+		/// </summary>
+		/// <param name="index">Initialy selected element.</param>
+		/// <returns>Form instance.</returns>
+		public static VariablesForm GetFlagInstance(int index) {
+			return new VariablesForm(MODE.FLAGS, index);
+		}
+		
+		/// <summary>
+		/// Method for retrieving form in a variable selection mode.
+		/// </summary>
+		/// <param name="index">Initialy selected element.</param>
+		/// <returns>Form instance.</returns>
+		public static VariablesForm GetVariableInstance(int index) {
+			return new VariablesForm(MODE.VARIABLES, index);
 		}
 		
 		/// <summary>
@@ -176,18 +207,13 @@ namespace RapeEngine.Maker {
 		/// <param name="e">Not used.</param>
 		void VariablesFormFormClosed(object sender, FormClosedEventArgs e) {
 			switch (mode) {
-				case (VARIABLES_FORM_RETURN.FLAG):
+				case (MODE.FLAGS):
 					Value = flag_name_index;
 					break;
-				case (VARIABLES_FORM_RETURN.VARIABLE):
+				case (MODE.VARIABLES):
 					Value = var_name_index;
 					break;
 			}
 		}
 	}
-	
-	/// <summary>
-	/// Enumerator to determine the form return value.
-	/// </summary>
-	public enum VARIABLES_FORM_RETURN {NOTHING, FLAG, VARIABLE}
 }

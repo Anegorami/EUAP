@@ -45,7 +45,9 @@ namespace RapeEngine.Maker.Actions {
 		/// <summary>
 		/// Method that is called when the user edits the action.
 		/// </summary>
-		public virtual void Edit() {}
+		public virtual void Edit() {
+			Initialize();
+		}
 		
 		/// <summary>
 		/// Method that is called when the user edits a subaction.

@@ -52,12 +52,5 @@ namespace RapeEngine.Maker.Conditions {
 			}
 			return false;
 		}
-		
-		/// <summary>
-		/// Edit method.
-		/// </summary>
-		public override void Edit() {
-			Initialize();
-		}
 	}
 }

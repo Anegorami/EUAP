@@ -40,7 +40,7 @@ namespace RapeEngine.Maker.Conditions {
 		public override void Edit() {
 			bool enough = false;
 			while (!enough) {
-				var form = new VirtualNewForm(VIRTUAL_NEW_FORM_RETURN.CONDITION);
+				VirtualNewForm form = VirtualNewForm.GetConditionsInstance();
 				if (form.ShowDialog() == DialogResult.OK) {
 					var action = (BaseScriptCondition)form.Value;
 					if (action.Initialize()) {

@@ -61,7 +61,21 @@
   <ItemGroup>
     <Compile Include="Components\AudioManager.cs" />
     <Compile Include="Components\UserVariables.cs" />
+    <Compile Include="Maker\Actions\AudioPlayBGM.cs" />
+    <Compile Include="Maker\Actions\AudioPlayBGS.cs" />
+    <Compile Include="Maker\Actions\AudioPlayME.cs" />
+    <Compile Include="Maker\Actions\AudioPlaySE.cs" />
+    <Compile Include="Maker\Actions\AudioPlayVO.cs" />
+    <Compile Include="Maker\Actions\AudioStopBGM.cs" />
+    <Compile Include="Maker\Actions\AudioStopBGS.cs" />
+    <Compile Include="Maker\Actions\AudioStopME.cs" />
+    <Compile Include="Maker\Actions\AudioStopSE.cs" />
+    <Compile Include="Maker\Actions\AudioStopVO.cs" />
     <Compile Include="Maker\Actions\VarSetVar.cs" />
+    <Compile Include="Maker\AudioSampleForm.cs" />
+    <Compile Include="Maker\AudioSampleForm.Designer.cs">
+      <DependentUpon>AudioSampleForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Maker\Conditions\VarVar.cs" />
     <Compile Include="Maker\ElementsKeeper.cs" />
     <Compile Include="Maker\Actions\FlowIf.cs" />
@@ -114,6 +128,9 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Maker\AudioSampleForm.resx">
+      <DependentUpon>AudioSampleForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Maker\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
